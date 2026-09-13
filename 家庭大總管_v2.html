@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MAJORDOMO">
+<meta name="theme-color" content="#0d0f14">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>MAJORDOMO</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0f14;--s1:#141720;--s2:#1a1e2b;--s3:#222639;
+  --br:#252a3a;--br2:#2e3448;
+  --a1:#5b8ef5;--a2:#f0944d;--a3:#50c78a;--a4:#f05c5c;
+  --a5:#a855f7;--a6:#f0c84d;--a7:#38c0e8;
+  --t:#e2e6f0;--t2:#8892aa;--t3:#4a5270;
+  --r:13px;--font:'Noto Sans TC',sans-serif;--mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--t);font-family:var(--font);display:flex;flex-direction:column;}
+
+/* ── TOPBAR ── */
+.topbar{
+  flex-shrink:0;height:52px;background:rgba(13,15,20,.97);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--br);
+  display:flex;align-items:center;padding:0 14px;
+  overflow-x:auto;scrollbar-width:none;z-index:99;
+}
+.topbar::-webkit-scrollbar{display:none;}
+.logo{font-size:15px;font-weight:800;color:var(--a1);white-space:nowrap;margin-right:18px;flex-shrink:0;}
+.tabs{display:flex;gap:2px;flex-shrink:0;}
+.tab{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;border:none;background:transparent;color:var(--t2);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .18s;font-family:var(--font);}
+.tab:hover{background:var(--s2);color:var(--t);}
+.tab.on{background:var(--s2);color:#fff;font-weight:700;}
+
+/* ── BODY ── */
+.body{flex:1;overflow-y:auto;padding:20px 16px 60px;}
+@media(min-width:760px){.body{padding:24px 28px 60px;}}
+.page{display:none;animation:fi .22s ease;}
+.page.on{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── SETUP BANNER ── */
+.setup-banner{
+  background:linear-gradient(135deg,rgba(91,142,245,.15),rgba(168,85,247,.1));
+  border:1px solid rgba(91,142,245,.3);border-radius:var(--r);
+  padding:20px;margin-bottom:20px;
+}
+.setup-banner h3{font-size:15px;font-weight:800;color:var(--a1);margin-bottom:10px;}
+.setup-banner p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:12px;}
+.setup-steps{list-style:none;counter-reset:step;}
+.setup-steps li{
+  counter-increment:step;display:flex;align-items:flex-start;gap:10px;
+  font-size:13px;color:var(--t2);margin-bottom:10px;line-height:1.6;
+}
+.setup-steps li::before{
+  content:counter(step);display:flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;background:var(--a1);color:#fff;
+  font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px;
+}
+.setup-steps li strong{color:var(--t);}
+.setup-steps li code{
+  background:var(--s2);border:1px solid var(--br2);border-radius:4px;
+  padding:1px 6px;font-family:var(--mono);font-size:11px;color:var(--a6);
+  word-break:break-all;
+}
+.sid-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+.sid-input{
+  flex:1;min-width:200px;padding:9px 12px;border-radius:8px;
+  background:var(--s2);border:1px solid var(--br2);color:var(--t);
+  font-size:13px;font-family:var(--mono);outline:none;
+  transition:border-color .15s;
+}
+.sid-input:focus{border-color:var(--a1);}
+.sid-input::placeholder{color:var(--t3);}
+.btn-connect{
+  padding:9px 18px;border-radius:8px;background:var(--a1);color:#fff;
+  border:none;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:var(--font);white-space:nowrap;transition:all .18s;
+}
+.btn-connect:hover{filter:brightness(1.12);}
+.btn-connect:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ── SYNC STATUS ── */
+.sync-bar{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:var(--s2);border:1px solid var(--br);border-radius:var(--rs);
+  margin-bottom:16px;font-size:12px;
+}
+.sync-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sync-dot.ok{background:var(--a3);}
+.sync-dot.err{background:var(--a4);}
+.sync-dot.spin{background:var(--a6);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.sync-text{color:var(--t2);flex:1;}
+.btn-sync{
+  padding:4px 12px;border-radius:6px;background:transparent;
+  border:1px solid var(--br2);color:var(--t2);font-size:11px;
+  cursor:pointer;font-family:var(--font);transition:all .15s;
+}
+.btn-sync:hover{border-color:var(--a1);color:var(--a1);}
+
+/* ── STAT CARDS ── */
+.stats{display:grid;gap:12px;margin-bottom:20px;}
+.c2{grid-template-columns:repeat(2,1fr);}
+.c3{grid-template-columns:repeat(3,1fr);}
+.c4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:680px){.c3,.c4{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:380px){.c2{grid-template-columns:1fr;}}
+.sc{background:var(--s1);border:1px solid var(--br);border-radius:var(--r);padding:14px 16px;}
+.sc-l{font-size:11px;color:var(--t2);margin-bottom:5px;letter-spacing:.3px;}
+.sc-v{font-size:20px;font-weight:800;font-family:var(--mono);}
+.sc-s{font-size:11px;color:var(--t3);margin-top:3px;}
+
+/* ── PAGE HEADER ── */
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+.ph-l{display:flex;align-items:center;gap:10px;}
+.ph-ico{font-size:24px;}
+.ph-title{font-size:20px;font-weight:800;}
+.ph-sub{font-size:12px;color:var(--t2);margin-top:2px;}
+.btn-add{display:flex;align-items:center;gap:5px;padding:7px 16px;border-radius:9px;background:var(--a1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;font-family:var(--font);white-space:nowrap;flex-shrink:0;}
+.btn-add:hover{filter:brightness(1.12);transform:translateY(-1px);}
+
+/* ── PILLS ── */
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.pill{padding:5px 13px;border-radius:20px;border:1px solid var(--br2);background:transparent;color:var(--t2);font-size:12px;cursor:pointer;transition:all .15s;font-family:var(--font);}
+.pill:hover{border-color:var(--a1);color:var(--t);}
+.pill.on{background:var(--a1);color:#fff;border-color:var(--a1);}
+
+/* ── TABLE ── */
+.tw{background:var(--s1);border:1px solid var(--br);border-radius:var(--r);overflow:hidden;margin-bottom:18px;}
+.tb-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--br);gap:10px;flex-wrap:wrap;}
+.tb-title{font-size:13px;font-weight:700;}
+.si{padding:6px 11px;border-radius:7px;background:var(--s2);border:1px solid var(--br);color:var(--t);font-size:12px;font-family:var(--font);outline:none;width:180px;transition:border-color .15s;}
+.si:focus{border-color:var(--a1);}
+.si::placeholder{color:var(--t3);}
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:480px;}
+th{background:var(--s2);padding:9px 13px;text-align:left;font-size:11px;color:var(--t2);font-weight:600;border-bottom:1px solid var(--br);white-space:nowrap;letter-spacing:.3px;}
+td{padding:10px 13px;font-size:13px;border-bottom:1px solid rgba(37,42,58,.5);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(91,142,245,.04);}
+.tn{font-family:var(--mono);text-align:right;}
+.tp{color:var(--a3);}
+.tn-{color:var(--a4);}
+.tnt{font-size:11.5px;color:var(--t2);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.loading-row td{text-align:center;color:var(--t3);padding:30px;font-size:13px;}
+
+/* ── BADGES ── */
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;white-space:nowrap;}
+.b1{background:rgba(91,142,245,.15);color:var(--a1);}
+.b2{background:rgba(240,148,77,.15);color:var(--a2);}
+.b3{background:rgba(80,199,138,.15);color:var(--a3);}
+.b4{background:rgba(240,92,92,.15);color:var(--a4);}
+.b5{background:rgba(168,85,247,.15);color:var(--a5);}
+.b6{background:rgba(240,200,77,.15);color:var(--a6);}
+.b7{background:rgba(56,192,232,.15);color:var(--a7);}
+
+/* ── ACTION BUTTONS ── */
+.ab{padding:3px 9px;border-radius:5px;border:1px solid var(--br2);background:transparent;color:var(--t2);font-size:11px;cursor:pointer;font-family:var(--font);margin-left:3px;transition:all .12s;}
+.ab:hover{background:var(--s2);color:var(--t);}
+.ab.del:hover{border-color:var(--a4);color:var(--a4);}
+
+/* ── MODAL ── */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.mo.on{display:flex;}
+.mbox{background:var(--s1);border:1px solid var(--br2);border-radius:var(--r);padding:24px 20px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;animation:mIn .2s ease;}
+@keyframes mIn{from{transform:scale(.95) translateY(-8px);opacity:0}}
+.mt{font-size:16px;font-weight:800;margin-bottom:18px;}
+.fg{margin-bottom:13px;}
+.fl{font-size:11px;color:var(--t2);margin-bottom:5px;display:block;letter-spacing:.3px;}
+.fi,.fs,.fta{width:100%;padding:9px 11px;border-radius:7px;background:var(--s2);border:1px solid var(--br);color:var(--t);font-size:13px;font-family:var(--font);outline:none;transition:border-color .15s;}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--a1);}
+.fs option{background:var(--s2);}
+.fta{resize:vertical;min-height:70px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ma{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;}
+.bc{padding:7px 16px;border-radius:7px;background:transparent;border:1px solid var(--br);color:var(--t2);font-size:13px;cursor:pointer;font-family:var(--font);}
+.bs{padding:7px 18px;border-radius:7px;background:var(--a1);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);}
+.bs:hover{filter:brightness(1.1);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;z-index:999;background:var(--s2);border:1px solid var(--a3);color:var(--a3);padding:10px 18px;border-radius:9px;font-size:13px;font-weight:700;transform:translateY(50px);opacity:0;transition:all .25s;pointer-events:none;}
+.toast.on{transform:none;opacity:1;}
+
+/* ── DASHBOARD ── */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.dcard{background:var(--s1);border:1px solid var(--br);border-radius:var(--r);padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.dcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.dc1::before{background:var(--a1);}.dc2::before{background:var(--a2);}.dc3::before{background:var(--a3);}
+.dc4::before{background:var(--a4);}.dc5::before{background:var(--a5);}.dc6::before{background:var(--a6);}.dc7::before{background:var(--a7);}
+.dcard:hover{border-color:var(--a1);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.4);}
+.dico{font-size:28px;margin-bottom:10px;}
+.dtitle{font-size:14px;font-weight:800;margin-bottom:4px;}
+.ddesc{font-size:11.5px;color:var(--t2);line-height:1.5;}
+.dval{font-size:17px;font-weight:800;font-family:var(--mono);margin-top:10px;}
+.dvlab{font-size:10px;color:var(--t3);}
+
+/* ── GRID2 ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:700px){.grid2{grid-template-columns:1fr;}}
+
+/* ── COLORS ── */
+.c1{color:var(--a1);}.c2{color:var(--a2);}.c3{color:var(--a3);}
+.c4{color:var(--a4);}.c5{color:var(--a5);}.c6{color:var(--a6);}.c7{color:var(--a7);}
+
+/* ── INSTALL BANNER ── */
+.install-banner{
+  display:none;position:fixed;bottom:16px;left:16px;right:16px;z-index:150;
+  background:var(--s2);border:1px solid var(--a1);border-radius:var(--r);
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+  box-shadow:0 8px 28px rgba(0,0,0,.5);
+}
+.install-banner.show{display:flex;}
+.install-banner .ico{font-size:24px;flex-shrink:0;}
+.install-banner .txt{flex:1;}
+.install-banner .txt strong{display:block;font-size:13px;margin-bottom:2px;}
+.install-banner .txt span{font-size:11.5px;color:var(--t2);}
+.btn-install{padding:7px 14px;border-radius:7px;background:var(--a1);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;}
+.btn-dismiss{padding:7px;border-radius:7px;background:transparent;border:none;color:var(--t3);font-size:16px;cursor:pointer;flex-shrink:0;}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--br2);border-radius:3px;}
+
+.rs{--rs:8px;}
+
+@media(max-width:420px){
+  .fr{grid-template-columns:1fr;}
+  th,td{padding:8px 9px;font-size:12px;}
+  .ph-title{font-size:17px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="logo">🏠 MAJORDOMO</div>
+  <div class="tabs">
+    <button class="tab on"  onclick="go('home')"      data-p="home">      📊 Overview</button>
+    <button class="tab"     onclick="go('wealth')"    data-p="wealth">    🏦 Assets</button>
+    <button class="tab"     onclick="go('wealth_ana')"data-p="wealth_ana">📈 Analysis</button>
+    <button class="tab"     onclick="go('stock')"     data-p="stock">     📉 Stocks</button>
+    <button class="tab"     onclick="go('child_est')" data-p="child_est"> 👶 Childcare</button>
+    <button class="tab"     onclick="go('monthly')"   data-p="monthly">   💰 Monthly</button>
+    <button class="tab"     onclick="go('ins_luke')"  data-p="ins_luke">  🛡️ Ins. Luke</button>
+    <button class="tab"     onclick="go('ins_jamie')" data-p="ins_jamie"> 🛡️ Ins. Jamie</button>
+    <button class="tab"     onclick="go('wedding')"   data-p="wedding">   💍 Wedding</button>
+    <button class="tab"     onclick="go('settings')"  data-p="settings">  ⚙️ Settings</button>
+  </div>
+</nav>
+
+<div class="body">
+
+<!-- ══ HOME ══ -->
+<div id="pg-home" class="page on">
+  <div class="ph">
+    <div class="ph-l">
+      <div class="ph-ico">📊</div>
+      <div><div class="ph-title">MAJORDOMO</div><div class="ph-sub" id="home-sub">Loading...</div></div>
+    </div>
+    <button class="btn-sync" id="home-sync-btn" onclick="syncAll()" style="padding:7px 14px;border-radius:8px;background:transparent;border:1px solid var(--br2);color:var(--t2);font-size:12px;cursor:pointer;font-family:var(--font);">🔄 Sync</button>
+  </div>
+  <div id="home-sync-bar" class="sync-bar" style="display:none">
+    <div class="sync-dot spin" id="home-dot"></div>
+    <span class="sync-text" id="home-sync-text">Syncing...</span>
+    <span style="font-size:11px;color:var(--t3)" id="home-sync-time"></span>
+  </div>
+  <div class="stats c4">
+    <div class="sc"><div class="sc-l">Wedding</div><div class="sc-v c2" id="h-wed">—</div></div>
+    <div class="sc"><div class="sc-l">Luke Policies</div><div class="sc-v c1" id="h-insl">—</div></div>
+    <div class="sc"><div class="sc-l">JC Assets</div><div class="sc-v c3" id="h-wealth">—</div></div>
+    <div class="sc"><div class="sc-l">Stock P&L</div><div class="sc-v" id="h-pnl">—</div></div>
+  </div>
+  <div class="dash-grid">
+    <div class="dcard dc2" onclick="go('wedding')"><div class="dico">💍</div><div class="dtitle">Wedding</div><div class="ddesc">Expenses incl. banquet, dress, gifts</div><div class="dval c2" id="dc-wed">—</div><div class="dvlab">Total spent</div></div>
+    <div class="dcard dc1" onclick="go('ins_luke')"><div class="dico">🛡️</div><div class="dtitle">Insurance Luke</div><div class="ddesc">Farglory / AIA / Fubon / Global</div><div class="dval c1" id="dc-insl">—</div><div class="dvlab">Policies</div></div>
+    <div class="dcard dc5" onclick="go('ins_jamie')"><div class="dico">🛡️</div><div class="dtitle">Insurance Jamie</div><div class="ddesc">Mercuries / Shin Kong / Homeway</div><div class="dval c5" id="dc-insj">—</div><div class="dvlab">Policies</div></div>
+    <div class="dcard dc3" onclick="go('child_est')"><div class="dico">👶</div><div class="dtitle">Childcare Est.</div><div class="ddesc">Monthly cost by school plan</div><div class="dval c3" id="dc-child">—</div><div class="dvlab">Plans</div></div>
+    <div class="dcard dc6" onclick="go('monthly')"><div class="dico">💰</div><div class="dtitle">Monthly Budget</div><div class="ddesc">Wang + Ya household spending</div><div class="dval c6" id="dc-mo">—</div><div class="dvlab">Monthly total</div></div>
+    <div class="dcard dc7" onclick="go('wealth')"><div class="dico">🏦</div><div class="dtitle">Assets</div><div class="ddesc">Deposits / savings / FX / investments</div><div class="dval c7" id="dc-wealth">—</div><div class="dvlab">JC total assets</div></div>
+    <div class="dcard dc4" onclick="go('wealth_ana')"><div class="dico">📈</div><div class="dtitle">Asset Analysis</div><div class="ddesc">Liquid / reserve / planned expenses</div><div class="dval c4" id="dc-real">—</div><div class="dvlab">Net available</div></div>
+    <div class="dcard dc5" onclick="go('stock')"><div class="dico">📉</div><div class="dtitle">Stock Portfolio</div><div class="ddesc">Cost basis, market value, P&L</div><div class="dval" id="dc-pnl">—</div><div class="dvlab">Unrealized P&L</div></div>
+  </div>
+</div>
+
+<!-- ══ WEDDING ══ -->
+<div id="pg-wedding" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">💍</div><div><div class="ph-title">Wedding</div><div class="ph-sub">2015 wedding expenses</div></div></div>
+    <button class="btn-add" onclick="openM('m-wed')">＋ Add</button>
+  </div>
+  <div id="wed-sync" class="sync-bar" style="display:none"><div class="sync-dot spin"></div><span class="sync-text">Loading from Google Sheets...</span></div>
+  <div class="stats c4">
+    <div class="sc"><div class="sc-l">Total</div><div class="sc-v c2" id="wed-total">—</div></div>
+    <div class="sc"><div class="sc-l">Wang (Groom)</div><div class="sc-v c1" id="wed-wang">—</div></div>
+    <div class="sc"><div class="sc-l">Ya (Bride)</div><div class="sc-v c5" id="wed-ya">—</div></div>
+    <div class="sc"><div class="sc-l">Records</div><div class="sc-v c3" id="wed-cnt">—</div></div>
+  </div>
+  <div class="pills" id="wed-pills"></div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">Wedding Expenses</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('wed-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="wed-tb">
+      <thead><tr><th>Category</th><th>Item / Brand</th><th>Total</th><th>Ya Paid</th><th>Wang Paid</th><th>Note</th><th>Actions</th></tr></thead>
+      <tbody id="wed-body"><tr class="loading-row"><td colspan="7">⏳ Please connect Google Sheets in Settings</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ INS LUKE ══ -->
+<div id="pg-ins_luke" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">🛡️</div><div><div class="ph-title">Insurance — Luke</div><div class="ph-sub">All policies + claims</div></div></div>
+    <button class="btn-add" onclick="openM('m-insl')">＋ Add Policy</button>
+  </div>
+  <div class="stats c3">
+    <div class="sc"><div class="sc-l">Policies</div><div class="sc-v c1" id="insl-cnt">—</div></div>
+    <div class="sc"><div class="sc-l">Annual Premium</div><div class="sc-v c2" id="insl-annual">—</div></div>
+    <div class="sc"><div class="sc-l">Monthly Avg.</div><div class="sc-v c4" id="insl-mo">—</div></div>
+  </div>
+  <div class="pills" id="insl-pills"></div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">Policy Details</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('insl-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="insl-tb">
+      <thead><tr><th>Type</th><th>Company</th><th>Policy Name</th><th>Code / Coverage</th><th>Term</th><th>Until Age</th><th>Annual</th><th>Period</th><th>Actions</th></tr></thead>
+      <tbody id="insl-body"><tr class="loading-row"><td colspan="9">⏳ Connect Google Sheets in Settings</td></tr></tbody>
+    </table></div>
+  </div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">🏥 Claims</span><button class="btn-add" style="padding:5px 12px;font-size:12px" onclick="openM('m-claim')">＋ Add</button></div>
+    <div class="tbl-wrap"><table id="claim-tb">
+      <thead><tr><th>Date</th><th>Reason</th><th>Insurer</th><th>Claim Amount</th><th>Note</th><th>Actions</th></tr></thead>
+      <tbody id="claim-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ INS JAMIE ══ -->
+<div id="pg-ins_jamie" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">🛡️</div><div><div class="ph-title">Insurance — Jamie</div><div class="ph-sub">Mercuries / Shin Kong / Homeway</div></div></div>
+    <button class="btn-add" onclick="openM('m-insj')">＋ Add Policy</button>
+  </div>
+  <div class="stats c3">
+    <div class="sc"><div class="sc-l">Policies</div><div class="sc-v c5" id="insj-cnt">—</div></div>
+    <div class="sc"><div class="sc-l">Total Coverage</div><div class="sc-v c3" id="insj-total">—</div></div>
+    <div class="sc"><div class="sc-l">Types</div><div class="sc-v c7" id="insj-types">—</div></div>
+  </div>
+  <div class="pills" id="insj-pills"></div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">Jamie Policy Details</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('insj-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="insj-tb">
+      <thead><tr><th>Type</th><th>Company</th><th>Policy Name</th><th>Coverage</th><th>Start Date</th><th>End Date</th><th>Benefits</th><th>Actions</th></tr></thead>
+      <tbody id="insj-body"><tr class="loading-row"><td colspan="8">⏳ Connect Google Sheets in Settings</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ CHILD EST ══ -->
+<div id="pg-child_est" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">👶</div><div><div class="ph-title">Childcare Estimates</div><div class="ph-sub">Monthly cost by school &amp; stage</div></div></div>
+    <button class="btn-add" onclick="openM('m-child')">＋ Add Plan</button>
+  </div>
+  <div class="stats c4">
+    <div class="sc"><div class="sc-l">Plans</div><div class="sc-v c3" id="child-cnt">—</div></div>
+    <div class="sc"><div class="sc-l">Min / Month</div><div class="sc-v c7" id="child-min">—</div></div>
+    <div class="sc"><div class="sc-l">Max / Month</div><div class="sc-v c2" id="child-max">—</div></div>
+    <div class="sc"><div class="sc-l">Avg / Month</div><div class="sc-v c5" id="child-avg">—</div></div>
+  </div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">Plan Comparison by Stage</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('child-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="child-tb">
+      <thead><tr><th>Stage</th><th>School / Plan</th><th>Food/Mo</th><th>Living/Mo</th><th>Tuition/Mo</th><th>School Fee/Mo</th><th>Total/Mo</th><th>Note</th><th>Actions</th></tr></thead>
+      <tbody id="child-body"><tr class="loading-row"><td colspan="9">⏳ Connect Google Sheets in Settings</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ MONTHLY ══ -->
+<div id="pg-monthly" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">💰</div><div><div class="ph-title">Monthly Budget</div><div class="ph-sub">Wang + Ya monthly spending plan</div></div></div>
+    <button class="btn-add" onclick="openM('m-mo')">＋ Add Item</button>
+  </div>
+  <div class="stats c3">
+    <div class="sc"><div class="sc-l">Wang / Month</div><div class="sc-v c1" id="mo-wang">—</div></div>
+    <div class="sc"><div class="sc-l">Ya / Month</div><div class="sc-v c5" id="mo-ya">—</div></div>
+    <div class="sc"><div class="sc-l">Total / Month</div><div class="sc-v c2" id="mo-total">—</div></div>
+  </div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">Monthly Breakdown</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('mo-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="mo-tb">
+      <thead><tr><th>Category</th><th>Item</th><th>Wang/Mo</th><th>Ya/Mo</th><th>Total/Mo</th><th>Note</th><th>Actions</th></tr></thead>
+      <tbody id="mo-body"><tr class="loading-row"><td colspan="7">⏳ Connect Google Sheets in Settings</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ WEALTH ══ -->
+<div id="pg-wealth" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">🏦</div><div><div class="ph-title">Assets</div><div class="ph-sub">CW (Wang) &amp; JC (Ya) holdings</div></div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-add" onclick="openM('m-wl')">＋ Add Asset</button>
+      <button class="btn-add" style="background:var(--a3)" onclick="openSnapModal()">📸 Snapshot</button>
+    </div>
+  </div>
+  <div class="pills" id="wl-pills"></div>
+  <div class="stats c4">
+    <div class="sc"><div class="sc-l">CW (Wang)</div><div class="sc-v c6" id="wl-cw">—</div></div>
+    <div class="sc"><div class="sc-l">JC (Ya)</div><div class="sc-v c3" id="wl-jc">—</div></div>
+    <div class="sc"><div class="sc-l">JC Change</div><div class="sc-v" id="wl-delta">—</div></div>
+    <div class="sc"><div class="sc-l">Records</div><div class="sc-v c7" id="wl-cnt">—</div></div>
+  </div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">Asset Details</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('wl-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="wl-tb">
+      <thead><tr><th>Type</th><th>Bank / Account</th><th>Owner</th><th>TWD</th><th>Foreign</th><th>Term</th><th>Rate</th><th>Note</th><th>Actions</th></tr></thead>
+      <tbody id="wl-body"><tr class="loading-row"><td colspan="9">⏳ Connect Google Sheets in Settings</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <!-- ── 財產異動圖表 ── -->
+  <div class="tw">
+    <div class="tb-top">
+      <span class="tb-title">📈 Asset History Chart</span>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <select id="chart-owner" class="si" style="width:120px" onchange="drawWealthChart()">
+          <option value="JC">JC (亞)</option>
+          <option value="CW">CW (王)</option>
+          <option value="total">Combined</option>
+        </select>
+        <select id="chart-period" class="si" style="width:100px" onchange="drawWealthChart()">
+          <option value="12">Last 12</option>
+          <option value="24">Last 24</option>
+          <option value="all">All</option>
+        </select>
+      </div>
+    </div>
+    <div style="padding:16px 16px 8px">
+      <canvas id="wealth-chart" style="width:100%;height:220px;display:block"></canvas>
+      <div id="chart-empty" style="text-align:center;color:var(--t3);font-size:13px;padding:40px 0;display:none">
+        No snapshots yet — click 📸 above to start tracking
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 編輯紀錄 ── -->
+  <div class="tw">
+    <div class="tb-top">
+      <span class="tb-title">📝 Edit Log</span>
+      <button class="ab" onclick="clearWlLog()" style="color:var(--a4)">Clear Log</button>
+    </div>
+    <div class="tbl-wrap"><table id="wl-log-tb">
+      <thead><tr><th>Time</th><th>Action</th><th>Bank / Account</th><th>Type</th><th>Before</th><th>After</th><th>Note</th></tr></thead>
+      <tbody id="wl-log-body"></tbody>
+    </table></div>
+  </div>
+
+  <!-- ── 財產快照紀錄 ── -->
+  <div class="tw">
+    <div class="tb-top">
+      <span class="tb-title">📸 Snapshots</span>
+      <button class="ab del" onclick="clearSnaps()">Clear All</button>
+    </div>
+    <div class="tbl-wrap"><table id="snap-tb">
+      <thead><tr><th>Date</th><th>Label</th><th>JC (Ya)</th><th>CW (Wang)</th><th>Total</th><th>Note</th><th>Actions</th></tr></thead>
+      <tbody id="snap-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ WEALTH ANA ══ -->
+<div id="pg-wealth_ana" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">📈</div><div><div class="ph-title">Asset Analysis</div><div class="ph-sub">Liquid / reserve / planned expenses</div></div></div>
+  </div>
+  <div class="stats c4">
+    <div class="sc"><div class="sc-l">Total Savings</div><div class="sc-v c3" id="ana-save">—</div></div>
+    <div class="sc"><div class="sc-l">Investments</div><div class="sc-v c1" id="ana-inv">—</div></div>
+    <div class="sc"><div class="sc-l">Reserve + Planned</div><div class="sc-v c2" id="ana-rsv">—</div></div>
+    <div class="sc"><div class="sc-l">Net Available</div><div class="sc-v" id="ana-real">—</div></div>
+  </div>
+  <div class="grid2">
+    <div class="tw" style="margin:0">
+      <div class="tb-top"><span class="tb-title">💾 Savings / Investments</span><button class="btn-add" style="padding:5px 12px;font-size:12px" onclick="openM('m-ana1')">＋</button></div>
+      <div class="tbl-wrap"><table id="ana-save-tb">
+        <thead><tr><th>Category</th><th>Item</th><th>Amount</th><th>Actions</th></tr></thead>
+        <tbody id="ana-save-body"></tbody>
+      </table></div>
+    </div>
+    <div class="tw" style="margin:0">
+      <div class="tb-top"><span class="tb-title">🏦 Reserve / Planned Expenses</span><button class="btn-add" style="padding:5px 12px;font-size:12px" onclick="openM('m-ana2')">＋</button></div>
+      <div class="tbl-wrap"><table id="ana-rsv-tb">
+        <thead><tr><th>Category</th><th>Item</th><th>Amount</th><th>Note</th><th>Actions</th></tr></thead>
+        <tbody id="ana-rsv-body"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STOCK ══ -->
+<div id="pg-stock" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">📉</div><div><div class="ph-title">Stock Portfolio</div><div class="ph-sub">Cost basis, market value, P&amp;L</div></div></div>
+    <button class="btn-add" onclick="openM('m-stk')">＋ Add Position</button>
+  </div>
+  <div class="stats c4">
+    <div class="sc"><div class="sc-l">Holdings</div><div class="sc-v c1" id="stk-cnt">—</div></div>
+    <div class="sc"><div class="sc-l">Cost Basis</div><div class="sc-v c2" id="stk-cost">—</div></div>
+    <div class="sc"><div class="sc-l">Market Value</div><div class="sc-v c7" id="stk-mkt">—</div></div>
+    <div class="sc"><div class="sc-l">Unrealized P&L</div><div class="sc-v" id="stk-pnl">—</div></div>
+  </div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">Portfolio Details</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('stk-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="stk-tb">
+      <thead><tr><th>Company</th><th>Ticker</th><th>Avg Cost</th><th>Shares</th><th>Cost Basis</th><th>Price</th><th>Mkt Value</th><th>P&L</th><th>Return</th><th>Actions</th></tr></thead>
+      <tbody id="stk-body"><tr class="loading-row"><td colspan="10">⏳ Connect Google Sheets in Settings</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ SETTINGS ══ -->
+<div id="pg-settings" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">⚙️</div><div><div class="ph-title">Settings</div><div class="ph-sub">Connect your Google Sheets data source</div></div></div>
+  </div>
+
+  <div class="setup-banner">
+    <h3>🔗 Connect your Google Sheets</h3>
+    <p>One-time setup. After connecting, any updates you make in Google Sheets will sync to this app on refresh.</p>
+    <ol class="setup-steps">
+      <li>Open your Google Sheets → click <strong>File → Share → Share with others</strong></li>
+      <li>Change access to <strong>Anyone with the link</strong> can <strong>View</strong>, then copy the link</li>
+      <li>Find the Spreadsheet ID — the part between <code>/d/</code> and <code>/edit</code> in the URL<br>e.g. <code>https://docs.google.com/spreadsheets/d/<strong>1BxiMVs0XRA5...</strong>/edit</code></li>
+      <li>Paste the ID below and click <strong>Connect</strong></li>
+    </ol>
+    <div class="sid-row">
+      <input class="sid-input" id="sheet-id-input" placeholder="Paste Spreadsheet ID here..." value="">
+      <button class="btn-connect" id="btn-connect" onclick="connectSheet()">Connect</button>
+    </div>
+    <div id="connect-status" style="margin-top:12px;font-size:12px;color:var(--t3);"></div>
+  </div>
+
+  <!-- Sheet name mapping -->
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">📋 Sheet Tab Mapping</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Module</th><th>Your Google Sheets Tab Name</th><th>Status</th></tr></thead>
+        <tbody id="sheet-map-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">📱 Install as App</span></div>
+    <div style="padding:16px">
+      <div style="font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:14px">
+        <strong style="color:var(--t);display:block;margin-bottom:8px">💻 Desktop Install (Chrome / Edge):</strong>
+        Look for the install icon in the address bar → click → Install → icon appears on desktop<br><br>
+        <strong style="color:var(--t);display:block;margin-bottom:8px">📱 iPhone Install (Safari):</strong>
+        Tap the share icon → Add to Home Screen → Add<br><br>
+        <strong style="color:var(--t);display:block;margin-bottom:8px">📱 Android Install (Chrome):</strong>
+        Tap the menu (⋮) → Add to Home Screen
+      </div>
+      <button class="btn-connect" id="btn-pwa-install" style="display:none" onclick="installPWA()">📲 Install on this device</button>
+      <div id="pwa-status" style="font-size:12px;color:var(--t3);margin-top:8px"></div>
+    </div>
+  </div>
+
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">🔄 Sync Status</span></div>
+    <div style="padding:16px">
+      <div id="sync-status-detail" style="font-size:13px;color:var(--t2);line-height:1.8">Not connected</div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-connect" onclick="syncAll()">🔄 Sync All Now</button>
+        <button class="bc" onclick="clearCache()" style="padding:7px 14px;font-size:13px">🗑️ Clear Cache</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /body -->
+
+<!-- ════ MODALS ════ -->
+<!-- WEDDING -->
+<div class="mo" id="m-wed"><div class="mbox">
+  <div class="mt" id="m-wed-t">Add Wedding Expense</div><input type="hidden" id="wed-eid">
+  <div class="fr">
+    <div class="fg"><label class="fl">Category</label><input class="fi" id="wed-cat" placeholder="e.g. Banquet, Wedding Dress"></div>
+    <div class="fg"><label class="fl">Item / Brand</label><input class="fi" id="wed-item" placeholder="e.g. Ambassador Hotel 21 tables"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Total (NT$)</label><input class="fi" type="number" id="wed-total-i" placeholder="0"></div>
+    <div class="fg"><label class="fl">Ya Paid</label><input class="fi" type="number" id="wed-ya-i" placeholder="0"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Wang Paid</label><input class="fi" type="number" id="wed-wang-i" placeholder="0"></div>
+    <div class="fg"><label class="fl">Note</label><input class="fi" id="wed-note" placeholder="Date / notes"></div>
+  </div>
+  <div class="ma"><button class="bc" onclick="closeM('m-wed')">Cancel</button><button class="bs" onclick="saveWed()">Save</button></div>
+</div></div>
+
+<!-- INS LUKE -->
+<div class="mo" id="m-insl"><div class="mbox">
+  <div class="mt" id="m-insl-t">Add Luke Policy</div><input type="hidden" id="insl-eid">
+  <div class="fr">
+    <div class="fg"><label class="fl">Type</label><select class="fs" id="insl-type"><option>Life</option><option>Accident</option><option>Accident (Actual)</option><option>Accident (Daily)</option><option>Medical (Actual)</option><option>Cancer</option><option>Disability Aid</option><option>Disability</option><option>Burns</option></select></div>
+    <div class="fg"><label class="fl">Insurer</label><input class="fi" id="insl-co" placeholder="e.g. Farglory, AIA"></div>
+  </div>
+  <div class="fg"><label class="fl">Policy Name</label><input class="fi" id="insl-name" placeholder="e.g. Farglory Whole Life"></div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Code / Coverage</label><input class="fi" id="insl-code" placeholder="e.g. FX7 NT$100K"></div>
+    <div class="fg"><label class="fl">Payment Term (yrs)</label><input class="fi" type="number" id="insl-yrs" placeholder="20"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Covered Until Age</label><input class="fi" id="insl-age" placeholder="e.g. 75, Lifetime"></div>
+    <div class="fg"><label class="fl">Annual Premium</label><input class="fi" type="number" id="insl-prem" placeholder="0"></div>
+  </div>
+  <div class="fg"><label class="fl">Policy Period</label><input class="fi" id="insl-period" placeholder="e.g. 2017.05.08-2037.05.08"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-insl')">Cancel</button><button class="bs" onclick="saveInsL()">Save</button></div>
+</div></div>
+
+<!-- CLAIM -->
+<div class="mo" id="m-claim"><div class="mbox">
+  <div class="mt" id="m-claim-t">Add Claim</div><input type="hidden" id="claim-eid">
+  <div class="fr">
+    <div class="fg"><label class="fl">Date</label><input class="fi" type="date" id="claim-date"></div>
+    <div class="fg"><label class="fl">Insurer</label><input class="fi" id="claim-co" placeholder="例：遠雄、全球"></div>
+  </div>
+  <div class="fg"><label class="fl">Reason</label><input class="fi" id="claim-reason" placeholder="e.g. Hospitalized, enterovirus"></div>
+  <div class="fg"><label class="fl">Claim Amount (NT$)</label><input class="fi" type="number" id="claim-amt" placeholder="0"></div>
+  <div class="fg"><label class="fl">Note</label><input class="fi" id="claim-note" placeholder="Optional"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-claim')">Cancel</button><button class="bs" onclick="saveClaim()">Save</button></div>
+</div></div>
+
+<!-- INS JAMIE -->
+<div class="mo" id="m-insj"><div class="mbox">
+  <div class="mt" id="m-insj-t">Add Jamie Policy</div><input type="hidden" id="insj-eid">
+  <div class="fr">
+    <div class="fg"><label class="fl">Type</label><select class="fs" id="insj-type"><option>General</option><option>Medical</option><option>Hosp./Surgery</option><option>Outpatient</option><option>Surgery</option><option>Critical Illness</option><option>Cancer</option></select></div>
+    <div class="fg"><label class="fl">Company</label><input class="fi" id="insj-co" placeholder="e.g. Mercuries, Shin Kong"></div>
+  </div>
+  <div class="fg"><label class="fl">Policy Name</label><input class="fi" id="insj-name" placeholder="Policy name"></div>
+  <div class="fr">
+    <div class="fg"><label class="fl">保額</label><input class="fi" type="number" id="insj-amt" placeholder="0"></div>
+    <div class="fg"><label class="fl">Policy No.</label><input class="fi" id="insj-pid" placeholder="Optional"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Start Date</label><input class="fi" id="insj-start" placeholder="例：88/12/20"></div>
+    <div class="fg"><label class="fl">End Date</label><input class="fi" id="insj-end" placeholder="例：185/12/31"></div>
+  </div>
+  <div class="fg"><label class="fl">Benefits</label><input class="fi" id="insj-cover" placeholder="例：身故、完全失能、住院手術"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-insj')">Cancel</button><button class="bs" onclick="saveInsJ()">Save</button></div>
+</div></div>
+
+<!-- CHILD -->
+<div class="mo" id="m-child"><div class="mbox">
+  <div class="mt" id="m-child-t">Add Childcare Plan</div><input type="hidden" id="child-eid">
+  <div class="fr">
+    <div class="fg"><label class="fl">Stage</label><select class="fs" id="child-stage"><option>Elementary</option><option>Junior High</option><option>High School</option><option>University</option><option>Graduate</option></select></div>
+    <div class="fg"><label class="fl">School / Plan</label><input class="fi" id="child-school" placeholder="e.g. Longhua, YMCA"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Food / Month</label><input class="fi" type="number" id="child-food" placeholder="6000"></div>
+    <div class="fg"><label class="fl">Living / Month</label><input class="fi" type="number" id="child-life" placeholder="1800"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Tuition / Month</label><input class="fi" type="number" id="child-art" placeholder="0"></div>
+    <div class="fg"><label class="fl">School Fee / Month</label><input class="fi" type="number" id="child-fee" placeholder="0"></div>
+  </div>
+  <div class="fg"><label class="fl">Note</label><input class="fi" id="child-note" placeholder="Course description"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-child')">Cancel</button><button class="bs" onclick="saveChild()">Save</button></div>
+</div></div>
+
+<!-- MONTHLY -->
+<div class="mo" id="m-mo"><div class="mbox">
+  <div class="mt" id="m-mo-t">Add Monthly Item</div><input type="hidden" id="mo-eid">
+  <div class="fr">
+    <div class="fg"><label class="fl">Category</label><select class="fs" id="mo-cat"><option>Food</option><option>Transport</option><option>Housing</option><option>Insurance/Savings</option><option>Parents Allowance</option><option>Mortgage</option><option>Entertainment</option><option>Travel</option><option>Retirement Fund</option><option>Childcare</option><option>Tax / Misc.</option></select></div>
+    <div class="fg"><label class="fl">Description</label><input class="fi" id="mo-item" placeholder="e.g. Car fuel"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Wang / Month</label><input class="fi" type="number" id="mo-wang-i" placeholder="0"></div>
+    <div class="fg"><label class="fl">Ya / Month</label><input class="fi" type="number" id="mo-ya-i" placeholder="0"></div>
+  </div>
+  <div class="fg"><label class="fl">Note</label><input class="fi" id="mo-note" placeholder="Calculation notes"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-mo')">Cancel</button><button class="bs" onclick="saveMo()">Save</button></div>
+</div></div>
+
+<!-- WEALTH -->
+<div class="mo" id="m-wl"><div class="mbox">
+  <div class="mt" id="m-wl-t">Add Asset</div><input type="hidden" id="wl-eid">
+  <div class="fr">
+    <div class="fg"><label class="fl">Type</label><select class="fs" id="wl-type"><option>Savings</option><option>Fixed Deposit</option><option>Foreign Currency</option><option>Investment</option><option>Insurance</option><option>Labor Pension</option><option>Other</option></select></div>
+    <div class="fg"><label class="fl">Owner</label><select class="fs" id="wl-owner"><option>JC (亞)</option><option>CW (王)</option><option>共同</option></select></div>
+  </div>
+  <div class="fg"><label class="fl">Bank / Account Name</label><input class="fi" id="wl-bank" placeholder="e.g. Mega Bank digital"></div>
+  <div class="fr">
+    <div class="fg"><label class="fl">TWD Amount</label><input class="fi" type="number" id="wl-ntd" placeholder="0"></div>
+    <div class="fg"><label class="fl">Foreign Currency</label><input class="fi" id="wl-fgn" placeholder="e.g. 1536 USD"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Deposit Term</label><input class="fi" id="wl-period" placeholder="e.g. 6 months"></div>
+    <div class="fg"><label class="fl">Interest Rate</label><input class="fi" id="wl-rate" placeholder="e.g. 1.445%"></div>
+  </div>
+  <div class="fg"><label class="fl">Note</label><input class="fi" id="wl-note" placeholder="Expiry date, notes"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-wl')">Cancel</button><button class="bs" onclick="saveWl()">Save</button></div>
+</div></div>
+
+<!-- WEALTH SNAPSHOT -->
+<div class="mo" id="m-wl-snap"><div class="mbox">
+  <div class="mt">📸 Asset Snapshot</div>
+  <p style="font-size:12.5px;color:var(--t2);margin-bottom:16px;line-height:1.6">A snapshot captures JC/CW totals at a point in time and plots them on the chart to track asset growth.</p>
+  <div class="fr">
+    <div class="fg"><label class="fl">Date</label><input class="fi" type="date" id="snap-date"></div>
+    <div class="fg"><label class="fl">Label</label><input class="fi" id="snap-label" placeholder="e.g. 2024Q1, Mid-year review"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">JC (Ya) TWD Total</label><input class="fi" type="number" id="snap-jc" placeholder="Auto-calculated, editable"></div>
+    <div class="fg"><label class="fl">CW (Wang) TWD Total</label><input class="fi" type="number" id="snap-cw" placeholder="Auto-calculated, editable"></div>
+  </div>
+  <div class="fg"><label class="fl">Note</label><input class="fi" id="snap-note" placeholder="Notes on major changes this period"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-wl-snap')">Cancel</button><button class="bs" onclick="saveSnap()">Save Snapshot</button></div>
+</div></div>
+
+<!-- ANA1 -->
+<div class="mo" id="m-ana1"><div class="mbox">
+  <div class="mt">新增儲蓄/投資</div><input type="hidden" id="ana1-eid">
+  <div class="fr">
+    <div class="fg"><label class="fl">Category</label><select class="fs" id="ana1-cat"><option>Savings</option><option>Investment / Insurance</option></select></div>
+    <div class="fg"><label class="fl">Item</label><input class="fi" id="ana1-item" placeholder="e.g. Ya_Savings"></div>
+  </div>
+  <div class="fg"><label class="fl">Amount</label><input class="fi" type="number" id="ana1-amt" placeholder="0"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-ana1')">Cancel</button><button class="bs" onclick="saveAna1()">Save</button></div>
+</div></div>
+
+<!-- ANA2 -->
+<div class="mo" id="m-ana2"><div class="mbox">
+  <div class="mt">新增備用金/支出規劃</div><input type="hidden" id="ana2-eid">
+  <div class="fr">
+    <div class="fg"><label class="fl">Category</label><select class="fs" id="ana2-cat"><option>Reserve Fund</option><option>Planned Expenses</option></select></div>
+    <div class="fg"><label class="fl">Item</label><input class="fi" id="ana2-item" placeholder="e.g. Emergency_1yr_WangYa"></div>
+  </div>
+  <div class="fg"><label class="fl">Amount</label><input class="fi" type="number" id="ana2-amt" placeholder="0"></div>
+  <div class="fg"><label class="fl">Note</label><input class="fi" id="ana2-note" placeholder="Calculation notes"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-ana2')">Cancel</button><button class="bs" onclick="saveAna2()">Save</button></div>
+</div></div>
+
+<!-- STOCK -->
+<div class="mo" id="m-stk"><div class="mbox">
+  <div class="mt" id="m-stk-t">Add Stock Position</div><input type="hidden" id="stk-eid">
+  <div class="fr">
+    <div class="fg"><label class="fl">Company Name</label><input class="fi" id="stk-name" placeholder="e.g. Innolux"></div>
+    <div class="fg"><label class="fl">Ticker</label><input class="fi" id="stk-code" placeholder="e.g. 3481"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Avg. Buy Price</label><input class="fi" type="number" id="stk-buy" step="0.01" placeholder="0.00" oninput="prevPnl()"></div>
+    <div class="fg"><label class="fl">Shares</label><input class="fi" type="number" id="stk-shares" placeholder="1000" oninput="prevPnl()"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label class="fl">Current Price</label><input class="fi" type="number" id="stk-price" step="0.01" placeholder="0.00" oninput="prevPnl()"></div>
+    <div class="fg"><label class="fl">P&L Preview</label><input class="fi" id="stk-prev" readonly style="color:var(--t3)"></div>
+  </div>
+  <div class="fg"><label class="fl">Note</label><input class="fi" id="stk-note" placeholder="Optional"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-stk')">Cancel</button><button class="bs" onclick="saveStk()">Save</button></div>
+</div></div>
+
+<div class="toast" id="toast">✓ 已儲存</div>
+
+<script>
+/* ══════ CONFIG ══════ */
+// Default sheet tab name mapping — user can override in settings
+const DEFAULT_SHEET_MAP = {
+  wedding:   '婚禮紀錄',
+  ins_luke:  '保險_Luke',
+  ins_jamie: '保險_Jamie',
+  child_est: '育兒費預估',
+  monthly:   '每月花費預估',
+  wealth:    '財產統計',
+  wealth_ana:'財產分析',
+  stock:     '股票'
+};
+
+/* ══════ DB (localStorage) ══════ */
+const DB = {
+  g(k){try{return JSON.parse(localStorage.getItem(k))||[];}catch{return[];}},
+  gv(k,def=''){try{return localStorage.getItem(k)||def;}catch{return def;}},
+  s(k,v){localStorage.setItem(k,JSON.stringify(v));},
+  sv(k,v){localStorage.setItem(k,v);},
+  id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+};
+
+/* ══════ UTILS ══════ */
+const $=id=>document.getElementById(id);
+const v=id=>$(id)?.value?.trim()||'';
+const sv=(id,val)=>{const e=$(id);if(e)e.value=val??'';};
+const clr=ids=>ids.forEach(id=>sv(id,''));
+const fmt=n=>n===undefined||n===null||n===''?'—':'$'+Math.round(+n||0).toLocaleString();
+const fmtN=n=>(+n||0).toLocaleString();
+function badge(txt,cls){return`<span class="badge ${cls}">${txt||'—'}</span>`;}
+function srch(tid,q){
+  document.querySelectorAll(`#${tid} tbody tr`).forEach(r=>{
+    r.style.display=r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+  });
+}
+function toast(msg='✓ 已儲存',isErr=false){
+  const t=$('toast');t.textContent=msg;
+  t.style.borderColor=isErr?'var(--a4)':'var(--a3)';
+  t.style.color=isErr?'var(--a4)':'var(--a3)';
+  t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2500);
+}
+function openM(id){$(id).classList.add('on');const df=$(id)?.querySelector('input[type=date]');if(df&&!df.value)df.value=new Date().toISOString().slice(0,10);}
+function closeM(id){$(id).classList.remove('on');}
+document.querySelectorAll('.mo').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('on');}));
+function saveR(key,id,r){const d=DB.g(key);if(id){const i=d.findIndex(x=>x.id===id);i>=0?d[i]=r:d.push(r);}else d.push(r);DB.s(key,d);}
+function delR(key,id,cb){if(!confirm('Delete this entry?'))return;DB.s(key,DB.g(key).filter(x=>x.id!==id));cb();toast('✓ Deleted');}
+
+/* ══════ GOOGLE SHEETS API ══════ */
+let SHEET_ID = DB.gv('sheet_id','');
+const SHEET_MAP = JSON.parse(DB.gv('sheet_map', JSON.stringify(DEFAULT_SHEET_MAP)));
+let syncState = {lastSync: DB.gv('last_sync',''), connected: false};
+
+function sheetsUrl(sheetName){
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+}
+
+async function fetchSheet(sheetName){
+  const url = sheetsUrl(sheetName);
+  const res = await fetch(url);
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  const text = await res.text();
+  // Strip Google's JSONP wrapper: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
+  const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);/)[1]);
+  if(json.status === 'error') throw new Error(json.errors?.[0]?.message || '試算表錯誤');
+  return parseGviz(json.table);
+}
+
+function parseGviz(table){
+  if(!table || !table.rows) return [];
+  const cols = table.cols.map(c => c.label || c.id);
+  return table.rows
+    .filter(row => row.c && row.c.some(cell => cell && cell.v !== null && cell.v !== undefined && cell.v !== ''))
+    .map(row => {
+      const obj = {id: DB.id()};
+      cols.forEach((col, i) => {
+        const cell = row.c?.[i];
+        obj[col] = cell?.f ?? cell?.v ?? '';
+      });
+      return obj;
+    });
+}
+
+async function connectSheet(){
+  const sid = v('sheet-id-input').trim();
+  if(!sid){alert('請輸入 Spreadsheet ID');return;}
+  $('connect-status').textContent='🔄 Testing connection...';
+  $('connect-status').style.color='var(--t2)';
+  $('btn-connect').disabled=true;
+  try {
+    SHEET_ID = sid;
+    const sheetName = SHEET_MAP['wedding'] || '婚禮紀錄';
+    await fetchSheet(sheetName);
+    DB.sv('sheet_id', sid);
+    syncState.connected = true;
+    $('connect-status').textContent='✅ Connected! Syncing all data...';
+    $('connect-status').style.color='var(--a3)';
+    toast('✅ Connected!');
+    renderSheetMap();
+    await syncAll();
+  } catch(err){
+    $('connect-status').textContent='❌ 連接失敗：'+err.message+' — 請確認 ID 正確且試算表已設為公開';
+    $('connect-status').style.color='var(--a4)';
+  }
+  $('btn-connect').disabled=false;
+}
+
+async function syncAll(){
+  if(!SHEET_ID){toast('Please connect Google Sheets in Settings', true);go('settings');return;}
+  setSyncUI(true,'Syncing...');
+  let errors=[];
+  const tasks=[
+    {key:'s_wedding', tab:SHEET_MAP.wedding||'婚禮紀錄', parse:parseWedding},
+    {key:'s_ins_luke', tab:SHEET_MAP.ins_luke||'保險_Luke', parse:parseInsLuke},
+    {key:'s_ins_jamie', tab:SHEET_MAP.ins_jamie||'保險_Jamie', parse:parseInsJamie},
+    {key:'s_child_est', tab:SHEET_MAP.child_est||'育兒費預估', parse:parseChild},
+    {key:'s_monthly', tab:SHEET_MAP.monthly||'每月花費預估', parse:parseMonthly},
+    {key:'s_wealth', tab:SHEET_MAP.wealth||'財產統計', parse:parseWealth},
+    {key:'s_wealth_ana', tab:SHEET_MAP.wealth_ana||'財產分析', parse:parseAna},
+    {key:'s_stock', tab:SHEET_MAP.stock||'股票', parse:parseStock},
+  ];
+  for(const task of tasks){
+    try{
+      const rows = await fetchSheet(task.tab);
+      const parsed = task.parse(rows);
+      DB.s(task.key, parsed);
+    }catch(err){
+      errors.push(task.tab+': '+err.message);
+    }
+  }
+  const now = new Date().toLocaleString('zh-TW');
+  DB.sv('last_sync', now); syncState.lastSync = now; syncState.connected = errors.length===0;
+  setSyncUI(false, errors.length ? `部分同步失敗 (${errors.length} 個分頁)` : 'Sync complete ✓');
+  if(errors.length) toast('⚠️ Some tabs failed to sync', true);
+  else toast('🔄 Sync complete!');
+  // re-render current page
+  const cur = document.querySelector('.tab.on')?.dataset?.p;
+  if(cur && cur!=='home' && cur!=='settings') render(cur);
+  rHome();
+  updateSyncDetail(errors);
+}
+
+function setSyncUI(loading, text){
+  const bar=$('home-sync-bar'); const dot=$('home-dot'); const txt=$('home-sync-text');
+  const time=$('home-sync-time');
+  bar.style.display='flex';
+  if(loading){dot.className='sync-dot spin';txt.textContent=text;time.textContent='';}
+  else{dot.className='sync-dot '+(syncState.connected?'ok':'err');txt.textContent=text;time.textContent=syncState.lastSync?'Last: '+syncState.lastSync:'';}
+}
+function updateSyncDetail(errors=[]){
+  const el=$('sync-status-detail');
+  if(!el)return;
+  el.innerHTML=`
+    <strong>Spreadsheet ID: </strong> <code style="font-family:var(--mono);font-size:11px;color:var(--a6)">${SHEET_ID||'未設定'}</code><br>
+    <strong>Last sync: </strong> ${syncState.lastSync||'Never'}<br>
+    <strong>Status: </strong> <span style="color:${syncState.connected?'var(--a3)':'var(--a4)'}">${syncState.connected?'✅ Connected':'❌ Not connected or errors'}</span>
+    ${errors.length?'<br><strong style="color:var(--a4)">Failed tabs: </strong><br>'+errors.map(e=>`<span style="font-size:11px;color:var(--a4)">• ${e}</span>`).join('<br>'):''}
+  `;
+}
+
+/* ══════ PARSE FUNCTIONS ══════
+   These map Google Sheets columns to app fields.
+   Column names must match your sheet's header row.
+*/
+function parseWedding(rows){
+  return rows.map(r=>({
+    id:DB.id(),
+    cat: r['項目']||r['類別']||r[Object.keys(r)[1]]||'',
+    item: r['細項']||r['品牌']||r[Object.keys(r)[2]]||'',
+    total: +(r['總價']||r['金額']||0),
+    ya: +(r['亞']||r['女方']||0),
+    wang: +(r['王']||r['男方']||0),
+    note: r['備註']||r['說明']||''
+  })).filter(r=>r.cat||r.item);
+}
+function parseInsLuke(rows){
+  return rows.map(r=>({
+    id:DB.id(),
+    type: r['種類']||r['類型']||'',
+    co: r['公司']||r['保險公司']||'',
+    name: r['保險名稱']||r['名稱']||'',
+    code: r['代號']||r['保額']||'',
+    yrs: r['年期']||r['繳費年期']||'',
+    age: r['保障年齡']||r['保障至']||'',
+    prem: +(r['年繳']||r['年繳保費']||0),
+    period: r['合約期間']||r['期間']||''
+  })).filter(r=>r.name||r.co);
+}
+function parseInsJamie(rows){
+  return rows.map(r=>({
+    id:DB.id(),
+    type: r['種類']||r['類型']||'',
+    co: r['公司']||r['保險公司']||'',
+    name: r['保險名稱']||r['名稱']||'',
+    amt: +(r['保額']||0),
+    start: r['生效日期']||r['起']||'',
+    end: r['到期日期']||r['迄']||'',
+    pid: r['保單號碼']||'',
+    cover: r['保障項目']||r['保障']||''
+  })).filter(r=>r.name||r.co);
+}
+function parseChild(rows){
+  return rows.map(r=>({
+    id:DB.id(),
+    stage: r['學齡']||r['階段']||'國小',
+    school: r['學校']||r['方案']||'',
+    food: +(r['食']||r['食/月']||0),
+    life: +(r['衣住行']||r['衣住行/月']||0),
+    art: +(r['才藝']||r['才藝補習/月']||0),
+    fee: +(r['學費']||r['學費/月']||0),
+    note: r['備註']||''
+  })).filter(r=>r.school||r.stage);
+}
+function parseMonthly(rows){
+  return rows.map(r=>({
+    id:DB.id(),
+    cat: r['類別']||'其他',
+    item: r['項目']||'',
+    wang: +(r['王']||r['王/月']||0),
+    ya: +(r['亞']||r['亞/月']||0),
+    note: r['備註']||''
+  })).filter(r=>r.item);
+}
+function parseWealth(rows){
+  return rows.map(r=>({
+    id:DB.id(),
+    type: r['種類']||r['類型']||'活存',
+    owner: r['持有人']||r['帳戶']||'JC (亞)',
+    bank: r['銀行']||r['帳戶名稱']||r['銀行/帳戶']||'',
+    ntd: +(r['台幣']||r['金額']||r['台幣金額']||0),
+    fgn: r['外幣']||'',
+    period: r['定存期間']||'',
+    rate: r['利率']||'',
+    note: r['備註']||''
+  })).filter(r=>r.bank);
+}
+function parseAna(rows){
+  // Split into save vs rsv based on 類別 column
+  return rows.map(r=>({
+    id:DB.id(),
+    _section: r['區塊']||r['類別']||'儲蓄',
+    cat: r['小類']||r['類別']||'儲蓄',
+    item: r['項目']||'',
+    amt: +(r['金額']||0),
+    note: r['備註']||''
+  })).filter(r=>r.item);
+}
+function parseStock(rows){
+  return rows.map(r=>({
+    id:DB.id(),
+    name: r['公司']||r['名稱']||'',
+    code: r['代號']||r['股票代號']||'',
+    buy: +(r['買進價']||r['均價']||0),
+    shares: +(r['股數']||0),
+    price: +(r['現價']||0),
+    note: r['備註']||''
+  })).filter(r=>r.name&&r.shares);
+}
+
+/* ══════ SHEET MAP UI ══════ */
+function renderSheetMap(){
+  const body=$('sheet-map-body');if(!body)return;
+  const labels={wedding:'婚禮紀錄',ins_luke:'保險Luke',ins_jamie:'保險Jamie',child_est:'育兒費預估',monthly:'每月花費預估',wealth:'財產統計',wealth_ana:'財產分析',stock:'股票'};
+  body.innerHTML=Object.entries(DEFAULT_SHEET_MAP).map(([key,def])=>{
+    const cached=DB.g('s_'+key);
+    const status=cached.length?`<span style="color:var(--a3)">✅ ${cached.length} 筆</span>`:'<span style="color:var(--t3)">Not synced</span>';
+    return`<tr><td>${labels[key]||key}</td><td><input class="si" style="width:100%;max-width:200px" id="smap-${key}" value="${SHEET_MAP[key]||def}" placeholder="${def}"></td><td>${status}</td></tr>`;
+  }).join('');
+}
+
+/* ══════ NAV ══════ */
+function go(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  $('pg-'+p).classList.add('on');
+  document.querySelector(`.tab[data-p="${p}"]`).classList.add('on');
+  render(p);
+}
+function render(p){
+  ({home:rHome,wedding:rWed,ins_luke:rInsL,ins_jamie:rInsJ,child_est:rChild,monthly:rMo,wealth:rWl,wealth_ana:rAna,stock:rStk,settings:rSettings})[p]?.();
+}
+
+/* ══════ BADGE / COLOR HELPERS ══════ */
+const wedClr={'提親':'b2','健康檢查':'b7','餅':'b3','帖':'b5','喜宴':'b4','交通':'b1','房間':'b3','人員':'b2','紅包':'b6','婚紗':'b5','穿搭':'b1','禮品':'b3','佈置':'b7','收禮':'b2','雜費':'b7'};
+const inslClr={'壽險':'b4','意外':'b2','意外實支':'b2','意外日額':'b2','實支實付':'b1','癌症':'b5','殘扶':'b3','殘廢':'b3','燒燙傷':'b4'};
+const coClr={'遠雄':'b1','友邦':'b5','富邦':'b2','新安東京':'b7','全球':'b3'};
+const insjClr={'一般':'b4','醫療':'b1','住院/手術/醫療':'b1','門診/出院':'b3','手術':'b2','重大疾病':'b6','癌症':'b5'};
+const jCoClr={'三商美邦':'b2','宏泰人壽':'b7','新光人壽':'b5'};
+const stageClr={'國小':'b3','國中':'b1','高中':'b2','大學':'b5','研究所':'b6'};
+const moCatClr={'食':'b3','行':'b7','住':'b1','保險|儲蓄':'b5','孝親費':'b2','房貸':'b4','娛樂':'b3','旅遊':'b1','養老金':'b6','育兒':'b3','稅費/雜費':'b2'};
+const wlTypeClr={'活存':'b3','定存':'b1','外幣':'b2','投資':'b5','保險':'b4','勞退':'b6','其他':'b7'};
+
+/* ══════ RENDER HOME ══════ */
+function rHome(){
+  const wl=DB.g('s_wealth').filter(r=>r.owner&&r.owner.includes('JC')).reduce((s,r)=>s+(+r.ntd||0),0)||0;
+  const stk=DB.g('s_stock');
+  const pnl=stk.reduce((s,r)=>s+((+r.price)-(+r.buy))*(+r.shares),0);
+  const il=DB.g('s_ins_luke').length;
+  const wed=DB.g('s_wedding').reduce((s,r)=>s+(+r.total||0),0)||0;
+  const localWed=DB.g('wedding').reduce((s,r)=>s+(+r.total||0),0)||0;
+  const mo=(DB.g('s_monthly').reduce((s,r)=>s+(+r.wang||0)+(+r.ya||0),0))||0;
+  const ana=DB.g('s_wealth_ana');
+  const svT=ana.filter(r=>r.cat==='儲蓄').reduce((s,r)=>s+(+r.amt||0),0);
+  const rvT=ana.filter(r=>r.cat==='備用金'||r.cat==='預計支出').reduce((s,r)=>s+(+r.amt||0),0);
+  const real=svT-rvT;
+  const hasSheet=!!SHEET_ID;
+  $('home-sub').textContent=hasSheet?`Google Sheets connected — ${syncState.lastSync?'Synced: '+syncState.lastSync:'尚Not synced'}`:'Go to Settings to connect Google Sheets';
+  if(SHEET_ID) setSyncUI(false, syncState.connected?'Synced':'Not synced');
+  $('h-wed').textContent=fmt(wed||localWed);
+  $('h-insl').textContent=il+' 張';
+  $('h-wealth').textContent=fmt(wl);
+  const pe=$('h-pnl');pe.textContent=(pnl>=0?'+':'')+fmt(pnl);pe.className='sc-v '+(pnl>=0?'c3':'c4');
+  $('dc-wed').textContent=fmt(wed||localWed);
+  $('dc-insl').textContent=il+' 張';
+  $('dc-insj').textContent=DB.g('s_ins_jamie').length+' 張';
+  $('dc-child').textContent=DB.g('s_child_est').length+' 方案';
+  $('dc-mo').textContent=mo?fmt(mo):'—';
+  $('dc-wealth').textContent=fmt(wl);
+  const re=$('dc-real');re.textContent=real?fmt(real):'—';re.className='dval '+(real>=0?'c3':'c4');
+  const dpe=$('dc-pnl');dpe.textContent=(pnl>=0?'+':'')+fmt(pnl);dpe.className='dval '+(pnl>=0?'c3':'c4');
+}
+
+/* ══════ RENDER PAGES (Sheet data priority, local fallback) ══════ */
+function getData(sheetKey, localKey){ const s=DB.g(sheetKey); return s.length?s:DB.g(localKey); }
+
+// WEDDING
+let wedF='all';
+function rWed(){
+  let d=getData('s_wedding','wedding');
+  const cats=[...new Set(d.map(r=>r.cat).filter(Boolean))];
+  const pc=$('wed-pills');
+  if(!pc.children.length||pc.dataset.built!='1'){
+    pc.innerHTML='<button class="pill on" onclick="setWedF(\'all\',this)">All</button>';
+    cats.forEach(c=>pc.innerHTML+=`<button class="pill" onclick="setWedF('${c}',this)">${c}</button>`);
+    pc.dataset.built='1';
+  }
+  if(wedF!=='all') d=d.filter(r=>r.cat===wedF);
+  const tot=d.reduce((s,r)=>s+(+r.total||0),0);
+  $('wed-total').textContent=fmt(tot);$('wed-wang').textContent=fmt(d.reduce((s,r)=>s+(+r.wang||0),0));
+  $('wed-ya').textContent=fmt(d.reduce((s,r)=>s+(+r.ya||0),0));$('wed-cnt').textContent=d.length;
+  $('wed-body').innerHTML=d.length?d.map(r=>`<tr>
+    <td>${badge(r.cat,wedClr[r.cat]||'b1')}</td><td>${r.item||'—'}</td>
+    <td class="tn c2">${fmt(r.total)}</td><td class="tn c5">${r.ya?fmt(r.ya):'—'}</td>
+    <td class="tn c1">${r.wang?fmt(r.wang):'—'}</td><td class="tnt">${r.note||''}</td>
+    <td><button class="ab" onclick="editWed('${r.id}')">Edit</button><button class="ab del" onclick="delWed('${r.id}')">Delete</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">No data yet — 請同步 Google Sheets 或手動新增</td></tr>';
+}
+function setWedF(c,el){document.querySelectorAll('#wed-pills .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');wedF=c;rWed();}
+function saveWed(){
+  const id=v('wed-eid');const r={id:id||DB.id(),cat:v('wed-cat'),item:v('wed-item'),total:+(v('wed-total-i')||0),ya:+(v('wed-ya-i')||0),wang:+(v('wed-wang-i')||0),note:v('wed-note')};
+  if(!r.cat){alert('請填項目類別');return;}
+  saveR('wedding',id,r);closeM('m-wed');clr(['wed-eid','wed-cat','wed-item','wed-total-i','wed-ya-i','wed-wang-i','wed-note']);
+  $('m-wed-t').textContent='新增婚禮花費';rWed();toast();
+}
+function editWed(id){
+  const d=getData('s_wedding','wedding');const r=d.find(x=>x.id===id)||DB.g('wedding').find(x=>x.id===id);if(!r)return;
+  sv('wed-eid',r.id);sv('wed-cat',r.cat);sv('wed-item',r.item);sv('wed-total-i',r.total||0);sv('wed-ya-i',r.ya||0);sv('wed-wang-i',r.wang||0);sv('wed-note',r.note||'');
+  $('m-wed-t').textContent='編輯婚禮花費';openM('m-wed');
+}
+function delWed(id){if(!confirm('Delete this entry?'))return;DB.s('wedding',DB.g('wedding').filter(x=>x.id!==id));DB.s('s_wedding',getData('s_wedding','wedding').filter(x=>x.id!==id));rWed();toast('✓ Deleted');}
+
+// INS LUKE
+let inslF='all';
+function rInsL(){
+  let d=getData('s_ins_luke','ins_luke');
+  const types=[...new Set(d.map(r=>r.type).filter(Boolean))];
+  const pc=$('insl-pills');
+  if(!pc.children.length||pc.dataset.built!='1'){
+    pc.innerHTML='<button class="pill on" onclick="setInslF(\'all\',this)">All</button>';
+    types.forEach(t=>pc.innerHTML+=`<button class="pill" onclick="setInslF('${t}',this)">${t}</button>`);
+    pc.dataset.built='1';
+  }
+  if(inslF!=='all') d=d.filter(r=>r.type===inslF);
+  const full=getData('s_ins_luke','ins_luke');
+  const annual=full.reduce((s,r)=>s+(+r.prem||0),0);
+  $('insl-cnt').textContent=full.length;$('insl-annual').textContent=fmt(annual);$('insl-mo').textContent=fmt(Math.round(annual/12));
+  $('insl-body').innerHTML=d.length?d.map(r=>`<tr>
+    <td>${badge(r.type,inslClr[r.type]||'b1')}</td><td>${badge(r.co,coClr[r.co]||'b7')}</td>
+    <td>${r.name||'—'}</td><td>${r.code||'—'}</td><td>${r.yrs||'—'} 年</td><td>${r.age||'—'}</td>
+    <td class="tn c2">${r.prem?fmt(r.prem):'—'}</td><td class="tnt">${r.period||'—'}</td>
+    <td><button class="ab" onclick="editInsL('${r.id}')">Edit</button><button class="ab del" onclick="delInsL('${r.id}')">Delete</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="9">No data yet</td></tr>';
+  const cl=getData('s_claims','claims');
+  $('claim-body').innerHTML=cl.length?cl.map(r=>`<tr>
+    <td>${r.date||'—'}</td><td>${r.reason||'—'}</td><td>${r.co||'—'}</td>
+    <td class="tn c3">${fmt(r.amt)}</td><td class="tnt">${r.note||''}</td>
+    <td><button class="ab" onclick="editClaim('${r.id}')">Edit</button><button class="ab del" onclick="delR('claims','${r.id}',rInsL)">Delete</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="6">No claims yet</td></tr>';
+}
+function setInslF(t,el){document.querySelectorAll('#insl-pills .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');inslF=t;rInsL();}
+function saveInsL(){
+  const id=v('insl-eid');const r={id:id||DB.id(),type:v('insl-type')||'壽險',co:v('insl-co'),name:v('insl-name'),code:v('insl-code'),yrs:v('insl-yrs'),age:v('insl-age'),prem:+(v('insl-prem')||0),period:v('insl-period')};
+  if(!r.name){alert('Please fill in policy name');return;}
+  saveR('ins_luke',id,r);closeM('m-insl');clr(['insl-eid','insl-co','insl-name','insl-code','insl-yrs','insl-age','insl-prem','insl-period']);
+  $('m-insl-t').textContent='新增 Luke 保單';rInsL();toast();
+}
+function editInsL(id){
+  const d=getData('s_ins_luke','ins_luke');const r=d.find(x=>x.id===id);if(!r)return;
+  sv('insl-eid',r.id);$('insl-type').value=r.type||'壽險';sv('insl-co',r.co);sv('insl-name',r.name);sv('insl-code',r.code||'');sv('insl-yrs',r.yrs||'');sv('insl-age',r.age||'');sv('insl-prem',r.prem||'');sv('insl-period',r.period||'');
+  $('m-insl-t').textContent='編輯 Luke 保單';openM('m-insl');
+}
+function delInsL(id){if(!confirm('Delete this entry?'))return;DB.s('ins_luke',DB.g('ins_luke').filter(x=>x.id!==id));DB.s('s_ins_luke',getData('s_ins_luke','ins_luke').filter(x=>x.id!==id));rInsL();toast('✓ Deleted');}
+function saveClaim(){
+  const id=v('claim-eid');const r={id:id||DB.id(),date:v('claim-date'),reason:v('claim-reason'),co:v('claim-co'),amt:+(v('claim-amt')||0),note:v('claim-note')};
+  if(!r.reason){alert('Please fill in reason');return;}
+  saveR('claims',id,r);closeM('m-claim');clr(['claim-eid','claim-reason','claim-co','claim-amt','claim-note']);rInsL();toast();
+}
+function editClaim(id){
+  const r=DB.g('claims').find(x=>x.id===id);if(!r)return;
+  sv('claim-eid',r.id);sv('claim-date',r.date||'');sv('claim-reason',r.reason);sv('claim-co',r.co||'');sv('claim-amt',r.amt);sv('claim-note',r.note||'');openM('m-claim');
+}
+
+// INS JAMIE
+let insjF='all';
+function rInsJ(){
+  let d=getData('s_ins_jamie','ins_jamie');
+  const types=[...new Set(d.map(r=>r.type).filter(Boolean))];
+  const pc=$('insj-pills');
+  if(!pc.children.length||pc.dataset.built!='1'){
+    pc.innerHTML='<button class="pill on" onclick="setInsjF(\'all\',this)">All</button>';
+    types.forEach(t=>pc.innerHTML+=`<button class="pill" onclick="setInsjF('${t}',this)">${t}</button>`);
+    pc.dataset.built='1';
+  }
+  if(insjF!=='all') d=d.filter(r=>r.type===insjF);
+  const full=getData('s_ins_jamie','ins_jamie');
+  $('insj-cnt').textContent=full.length;$('insj-total').textContent=fmt(full.reduce((s,r)=>s+(+r.amt||0),0));$('insj-types').textContent=new Set(full.map(r=>r.type)).size;
+  $('insj-body').innerHTML=d.length?d.map(r=>`<tr>
+    <td>${badge(r.type,insjClr[r.type]||'b1')}</td><td>${badge(r.co,jCoClr[r.co]||'b7')}</td>
+    <td>${r.name||'—'}</td><td class="tn">${r.amt?fmtN(r.amt):'—'}</td>
+    <td>${r.start||'—'}</td><td>${r.end||'—'}</td><td class="tnt">${r.cover||''}</td>
+    <td><button class="ab" onclick="editInsJ('${r.id}')">Edit</button><button class="ab del" onclick="delInsJ('${r.id}')">Delete</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="8">No data yet</td></tr>';
+}
+function setInsjF(t,el){document.querySelectorAll('#insj-pills .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');insjF=t;rInsJ();}
+function saveInsJ(){
+  const id=v('insj-eid');const r={id:id||DB.id(),type:v('insj-type')||'一般',co:v('insj-co'),name:v('insj-name'),amt:+(v('insj-amt')||0),start:v('insj-start'),end:v('insj-end'),pid:v('insj-pid'),cover:v('insj-cover')};
+  if(!r.name){alert('Please fill in policy name');return;}
+  saveR('ins_jamie',id,r);closeM('m-insj');clr(['insj-eid','insj-co','insj-name','insj-amt','insj-start','insj-end','insj-pid','insj-cover']);
+  $('m-insj-t').textContent='新增 Jamie 保單';rInsJ();toast();
+}
+function editInsJ(id){
+  const d=getData('s_ins_jamie','ins_jamie');const r=d.find(x=>x.id===id);if(!r)return;
+  sv('insj-eid',r.id);$('insj-type').value=r.type||'一般';sv('insj-co',r.co);sv('insj-name',r.name);sv('insj-amt',r.amt||'');sv('insj-start',r.start||'');sv('insj-end',r.end||'');sv('insj-pid',r.pid||'');sv('insj-cover',r.cover||'');
+  $('m-insj-t').textContent='編輯 Jamie 保單';openM('m-insj');
+}
+function delInsJ(id){if(!confirm('Delete this entry?'))return;DB.s('ins_jamie',DB.g('ins_jamie').filter(x=>x.id!==id));DB.s('s_ins_jamie',getData('s_ins_jamie','ins_jamie').filter(x=>x.id!==id));rInsJ();toast('✓ Deleted');}
+
+// CHILD
+function rChild(){
+  const d=getData('s_child_est','child_est');
+  const tots=d.map(r=>(+r.food||0)+(+r.life||0)+(+r.art||0)+(+r.fee||0));
+  $('child-cnt').textContent=d.length;
+  $('child-min').textContent=tots.length?fmt(Math.min(...tots)):'—';
+  $('child-max').textContent=tots.length?fmt(Math.max(...tots)):'—';
+  $('child-avg').textContent=tots.length?fmt(Math.round(tots.reduce((a,b)=>a+b,0)/tots.length)):'—';
+  $('child-body').innerHTML=d.length?d.map((r,i)=>{
+    const tot=tots[i];
+    return`<tr>
+      <td>${badge(r.stage,stageClr[r.stage]||'b1')}</td><td><strong>${r.school||'—'}</strong></td>
+      <td class="tn">${fmt(r.food)}</td><td class="tn">${fmt(r.life)}</td>
+      <td class="tn">${fmt(r.art)}</td><td class="tn">${fmt(r.fee)}</td>
+      <td class="tn c2"><strong>${fmt(tot)}</strong></td><td class="tnt">${r.note||''}</td>
+      <td><button class="ab" onclick="editChild('${r.id}')">Edit</button><button class="ab del" onclick="delChild('${r.id}')">Delete</button></td>
+    </tr>`;
+  }).join(''):'<tr class="loading-row"><td colspan="9">No data yet</td></tr>';
+}
+function saveChild(){
+  const id=v('child-eid');const food=+(v('child-food')||0),life=+(v('child-life')||0),art=+(v('child-art')||0),fee=+(v('child-fee')||0);
+  const r={id:id||DB.id(),stage:v('child-stage')||'國小',school:v('child-school'),food,life,art,fee,note:v('child-note')};
+  if(!r.school){alert('Please fill in school name');return;}
+  saveR('child_est',id,r);closeM('m-child');clr(['child-eid','child-school','child-food','child-life','child-art','child-fee','child-note']);
+  $('m-child-t').textContent='新增育兒費方案';rChild();toast();
+}
+function editChild(id){
+  const d=getData('s_child_est','child_est');const r=d.find(x=>x.id===id);if(!r)return;
+  sv('child-eid',r.id);$('child-stage').value=r.stage||'國小';sv('child-school',r.school);sv('child-food',r.food||'');sv('child-life',r.life||'');sv('child-art',r.art||'');sv('child-fee',r.fee||'');sv('child-note',r.note||'');
+  $('m-child-t').textContent='編輯育兒費方案';openM('m-child');
+}
+function delChild(id){if(!confirm('Delete this entry?'))return;DB.s('child_est',DB.g('child_est').filter(x=>x.id!==id));DB.s('s_child_est',getData('s_child_est','child_est').filter(x=>x.id!==id));rChild();toast('✓ Deleted');}
+
+// MONTHLY
+function rMo(){
+  const d=getData('s_monthly','monthly');
+  const wt=d.reduce((s,r)=>s+(+r.wang||0),0),yt=d.reduce((s,r)=>s+(+r.ya||0),0);
+  $('mo-wang').textContent=fmt(wt);$('mo-ya').textContent=fmt(yt);$('mo-total').textContent=fmt(wt+yt);
+  $('mo-body').innerHTML=d.length?d.map(r=>`<tr>
+    <td>${badge(r.cat,moCatClr[r.cat]||'b1')}</td><td>${r.item||'—'}</td>
+    <td class="tn c1">${r.wang?fmt(r.wang):'—'}</td><td class="tn c5">${r.ya?fmt(r.ya):'—'}</td>
+    <td class="tn c2"><strong>${fmt((+r.wang||0)+(+r.ya||0))}</strong></td>
+    <td class="tnt">${r.note||''}</td>
+    <td><button class="ab" onclick="editMo('${r.id}')">Edit</button><button class="ab del" onclick="delMo('${r.id}')">Delete</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">No data yet</td></tr>';
+}
+function saveMo(){
+  const id=v('mo-eid');const r={id:id||DB.id(),cat:v('mo-cat')||'食',item:v('mo-item'),wang:+(v('mo-wang-i')||0),ya:+(v('mo-ya-i')||0),note:v('mo-note')};
+  if(!r.item){alert('Please fill in item description');return;}
+  saveR('monthly',id,r);closeM('m-mo');clr(['mo-eid','mo-item','mo-wang-i','mo-ya-i','mo-note']);
+  $('m-mo-t').textContent='新增月支出項目';rMo();toast();
+}
+function editMo(id){
+  const d=getData('s_monthly','monthly');const r=d.find(x=>x.id===id);if(!r)return;
+  sv('mo-eid',r.id);$('mo-cat').value=r.cat||'食';sv('mo-item',r.item);sv('mo-wang-i',r.wang||'');sv('mo-ya-i',r.ya||'');sv('mo-note',r.note||'');
+  $('m-mo-t').textContent='編輯月支出項目';openM('m-mo');
+}
+function delMo(id){if(!confirm('Delete this entry?'))return;DB.s('monthly',DB.g('monthly').filter(x=>x.id!==id));DB.s('s_monthly',getData('s_monthly','monthly').filter(x=>x.id!==id));rMo();toast('✓ Deleted');}
+
+// WEALTH — with edit log + snapshot chart
+let wlF='all';
+let wlChartInst=null;
+
+function wlTotal(data, owner){
+  return data.filter(r=>r.owner&&r.owner.includes(owner)).reduce((s,r)=>s+(+r.ntd||0),0);
+}
+
+function rWl(){
+  let d=getData('s_wealth','wealth');
+  const pc=$('wl-pills');
+  if(!pc.children.length||pc.dataset.built!='1'){
+    pc.innerHTML='<button class="pill on" onclick="setWlF(\'all\',this)">All</button>';
+    ['JC (亞)','CW (王)','活存','定存','外幣','投資','勞退'].forEach(f=>pc.innerHTML+=`<button class="pill" onclick="setWlF('${f}',this)">${f}</button>`);
+    pc.dataset.built='1';
+  }
+  const full=getData('s_wealth','wealth');
+  const jc=wlTotal(full,'JC'), cw=wlTotal(full,'CW');
+  $('wl-jc').textContent=fmt(jc);$('wl-cw').textContent=fmt(cw);
+
+  // delta vs last snapshot
+  const snaps=DB.g('wl_snaps');
+  const deltaEl=$('wl-delta');
+  if(snaps.length>=2){
+    const last=snaps[snaps.length-1], prev=snaps[snaps.length-2];
+    const d_=last.jc-prev.jc; deltaEl.textContent=(d_>=0?'+':'')+fmt(d_); deltaEl.className='sc-v '+(d_>=0?'c3':'c4');
+  } else { deltaEl.textContent='—'; deltaEl.className='sc-v c7'; }
+
+  if(wlF!=='all') d=d.filter(r=>r.owner===wlF||r.type===wlF||(wlF==='JC (亞)'&&r.owner&&r.owner.includes('JC'))||(wlF==='CW (王)'&&r.owner&&r.owner.includes('CW')));
+  $('wl-cnt').textContent=d.length;
+  $('wl-body').innerHTML=d.length?d.map(r=>`<tr>
+    <td>${badge(r.type,wlTypeClr[r.type]||'b7')}</td><td>${r.bank||'—'}</td>
+    <td>${badge(r.owner&&r.owner.includes('JC')?'JC 亞':'CW 王',r.owner&&r.owner.includes('JC')?'b5':'b1')}</td>
+    <td class="tn c3">${r.ntd?fmt(r.ntd):'—'}</td><td>${r.fgn||'—'}</td>
+    <td>${r.period||'—'}</td><td>${r.rate||'—'}</td><td class="tnt">${r.note||''}</td>
+    <td><button class="ab" onclick="editWl('${r.id}')">Edit</button><button class="ab del" onclick="delWl('${r.id}')">Delete</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="9">No data yet</td></tr>';
+
+  rWlLog(); rSnaps(); drawWealthChart();
+}
+
+function setWlF(f,el){document.querySelectorAll('#wl-pills .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');wlF=f;rWl();}
+
+function saveWl(){
+  const id=v('wl-eid');
+  const old=id?getData('s_wealth','wealth').find(x=>x.id===id):null;
+  const r={id:id||DB.id(),type:v('wl-type')||'活存',owner:v('wl-owner')||'JC (亞)',bank:v('wl-bank'),ntd:+(v('wl-ntd')||0),fgn:v('wl-fgn'),period:v('wl-period'),rate:v('wl-rate'),note:v('wl-note')};
+  if(!r.bank){alert('Please enter bank/account name');return;}
+  // log
+  addWlLog(id?'編輯':'新增', r.bank, r.type, old?fmt(old.ntd):'—', fmt(r.ntd), v('wl-note'));
+  saveR('wealth',id,r);closeM('m-wl');clr(['wl-eid','wl-bank','wl-ntd','wl-fgn','wl-period','wl-rate','wl-note']);
+  $('m-wl-t').textContent='新增資產';wlF='all';rWl();toast();
+}
+
+function editWl(id){
+  const d=getData('s_wealth','wealth');const r=d.find(x=>x.id===id);if(!r)return;
+  sv('wl-eid',r.id);$('wl-type').value=r.type||'活存';$('wl-owner').value=r.owner||'JC (亞)';sv('wl-bank',r.bank);sv('wl-ntd',r.ntd||'');sv('wl-fgn',r.fgn||'');sv('wl-period',r.period||'');sv('wl-rate',r.rate||'');sv('wl-note',r.note||'');
+  $('m-wl-t').textContent='編輯資產';openM('m-wl');
+}
+
+function delWl(id){
+  if(!confirm('Delete this entry?'))return;
+  const r=getData('s_wealth','wealth').find(x=>x.id===id);
+  if(r) addWlLog('刪除',r.bank,r.type,fmt(r.ntd),'—','');
+  DB.s('wealth',DB.g('wealth').filter(x=>x.id!==id));DB.s('s_wealth',getData('s_wealth','wealth').filter(x=>x.id!==id));rWl();toast('✓ Deleted');
+}
+
+// ── Edit Log ──
+function addWlLog(action, bank, type, before, after, note){
+  const logs=DB.g('wl_log');
+  logs.unshift({id:DB.id(), time:new Date().toLocaleString('zh-TW'), action, bank, type, before, after, note});
+  if(logs.length>200) logs.splice(200);
+  DB.s('wl_log',logs);
+}
+function rWlLog(){
+  const logs=DB.g('wl_log');
+  const actClr={'新增':'b3','編輯':'b1','刪除':'b4'};
+  $('wl-log-body').innerHTML=logs.length?logs.slice(0,50).map(r=>`<tr>
+    <td style="font-size:11px;white-space:nowrap;color:var(--t3)">${r.time}</td>
+    <td>${badge(r.action,actClr[r.action]||'b7')}</td>
+    <td>${r.bank||'—'}</td>
+    <td>${badge(r.type||'—',wlTypeClr[r.type]||'b7')}</td>
+    <td class="tn" style="color:var(--t3)">${r.before||'—'}</td>
+    <td class="tn c3">${r.after||'—'}</td>
+    <td class="tnt">${r.note||''}</td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">No edit history yet</td></tr>';
+}
+function clearWlLog(){if(!confirm('Clear all edit history?'))return;DB.s('wl_log',[]);rWlLog();toast('✓ Cleared');}
+
+// ── Snapshots ──
+function openSnapModal(){
+  const full=getData('s_wealth','wealth');
+  const jc=wlTotal(full,'JC'), cw=wlTotal(full,'CW');
+  sv('snap-date', new Date().toISOString().slice(0,10));
+  sv('snap-jc', jc||''); sv('snap-cw', cw||'');
+  sv('snap-label',''); sv('snap-note','');
+  openM('m-wl-snap');
+}
+
+function saveSnap(){
+  const jcV=+(v('snap-jc')||0), cwV=+(v('snap-cw')||0);
+  const r={id:DB.id(), date:v('snap-date')||new Date().toISOString().slice(0,10), label:v('snap-label')||v('snap-date'), jc:jcV, cw:cwV, total:jcV+cwV, note:v('snap-note')};
+  const snaps=DB.g('wl_snaps'); snaps.push(r); snaps.sort((a,b)=>a.date.localeCompare(b.date));
+  DB.s('wl_snaps',snaps); closeM('m-wl-snap'); rWl(); toast('✓ Snapshot saved');
+}
+function rSnaps(){
+  const snaps=DB.g('wl_snaps');
+  $('snap-body').innerHTML=snaps.length?[...snaps].reverse().map(r=>`<tr>
+    <td style="white-space:nowrap">${r.date}</td>
+    <td>${r.label||'—'}</td>
+    <td class="tn c3">${fmt(r.jc)}</td>
+    <td class="tn c6">${fmt(r.cw)}</td>
+    <td class="tn c7"><strong>${fmt(r.total)}</strong></td>
+    <td class="tnt">${r.note||''}</td>
+    <td><button class="ab del" onclick="delSnap('${r.id}')">Delete</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">No snapshots yet — click 📸 to start tracking</td></tr>';
+}
+function delSnap(id){if(!confirm('Delete this snapshot?'))return;DB.s('wl_snaps',DB.g('wl_snaps').filter(x=>x.id!==id));rWl();toast('✓ Deleted');}
+function clearSnaps(){if(!confirm('Clear all snapshots? The chart will be empty.'))return;DB.s('wl_snaps',[]);rWl();toast('✓ Cleared');}
+
+// ── Wealth Chart (Canvas) ──
+function drawWealthChart(){
+  const canvas=$('wealth-chart'); const emptyEl=$('chart-empty');
+  if(!canvas) return;
+  const owner=($('chart-owner')||{value:'JC'}).value;
+  const period=($('chart-period')||{value:'12'}).value;
+  let snaps=[...DB.g('wl_snaps')].sort((a,b)=>a.date.localeCompare(b.date));
+  if(period!=='all') snaps=snaps.slice(-+period);
+  if(!snaps.length){ canvas.style.display='none'; emptyEl.style.display='block'; return; }
+  canvas.style.display='block'; emptyEl.style.display='none';
+
+  const labels=snaps.map(s=>s.label||s.date);
+  const values=snaps.map(s=>owner==='JC'?s.jc:owner==='CW'?s.cw:s.total);
+  const color=owner==='JC'?'#50c78a':owner==='CW'?'#f0c84d':'#5b8ef5';
+  const colorA=owner==='JC'?'rgba(80,199,138,.15)':owner==='CW'?'rgba(240,200,77,.15)':'rgba(91,142,245,.15)';
+
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.clientWidth-32, H=220;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr);
+
+  const pad={top:24,right:16,bottom:48,left:72};
+  const cW=W-pad.left-pad.right, cH=H-pad.top-pad.bottom;
+  const min=Math.min(...values)*0.97, max=Math.max(...values)*1.02;
+  const n=values.length;
+
+  ctx.clearRect(0,0,W,H);
+
+  // grid lines
+  const gridCount=4;
+  for(let i=0;i<=gridCount;i++){
+    const y=pad.top+cH*(1-i/gridCount);
+    ctx.strokeStyle='rgba(42,48,69,0.7)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(W-pad.right,y); ctx.stroke();
+    const val=min+(max-min)*i/gridCount;
+    ctx.fillStyle='#4a5270'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='right';
+    ctx.fillText('$'+Math.round(val/10000)+'萬',pad.left-6,y+3.5);
+  }
+
+  if(n===1){
+    // single point — just show dot
+    const x=pad.left+cW/2, y=pad.top+cH*(1-(values[0]-min)/(max-min||1));
+    ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2); ctx.fillStyle=color; ctx.fill();
+  } else {
+    const xOf=i=>pad.left+i*(cW/(n-1));
+    const yOf=v=>pad.top+cH*(1-(v-min)/(max-min||1));
+
+    // area fill
+    ctx.beginPath(); ctx.moveTo(xOf(0),yOf(values[0]));
+    values.forEach((v,i)=>{if(i>0)ctx.lineTo(xOf(i),yOf(v));});
+    ctx.lineTo(xOf(n-1),pad.top+cH); ctx.lineTo(xOf(0),pad.top+cH); ctx.closePath();
+    const grad=ctx.createLinearGradient(0,pad.top,0,pad.top+cH);
+    grad.addColorStop(0,colorA); grad.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=grad; ctx.fill();
+
+    // line
+    ctx.beginPath(); ctx.moveTo(xOf(0),yOf(values[0]));
+    values.forEach((v,i)=>{if(i>0)ctx.lineTo(xOf(i),yOf(v));});
+    ctx.strokeStyle=color; ctx.lineWidth=2; ctx.lineJoin='round'; ctx.stroke();
+
+    // dots & labels
+    values.forEach((v,i)=>{
+      const x=xOf(i), y=yOf(v);
+      ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
+      ctx.fillStyle='#0d0f14'; ctx.fill();
+      ctx.strokeStyle=color; ctx.lineWidth=2; ctx.stroke();
+      // x-axis label
+      ctx.save(); ctx.translate(x,H-pad.bottom+14); ctx.rotate(-Math.PI/5);
+      ctx.fillStyle='#4a5270'; ctx.font='10px Noto Sans TC,sans-serif'; ctx.textAlign='right';
+      ctx.fillText(labels[i],0,0); ctx.restore();
+      // value tooltip on top of dot
+      if(n<=8){
+        ctx.fillStyle='#e2e6f0'; ctx.font='bold 10px DM Mono,monospace'; ctx.textAlign='center';
+        ctx.fillText('$'+Math.round(v/10000)+'萬',x,y-9);
+      }
+    });
+  }
+}
+
+// WEALTH ANA
+function rAna(){
+  const raw=getData('s_wealth_ana','ana_all');
+  // Try to split into save vs rsv
+  const sv_=DB.g('ana_save').length?DB.g('ana_save'):raw.filter(r=>r.cat==='儲蓄'||r.cat==='投資保險');
+  const rv_=DB.g('ana_rsv').length?DB.g('ana_rsv'):raw.filter(r=>r.cat==='備用金'||r.cat==='預計支出');
+  const svTot=sv_.filter(r=>r.cat==='儲蓄').reduce((s,r)=>s+(+r.amt||0),0);
+  const invTot=sv_.filter(r=>r.cat==='投資保險').reduce((s,r)=>s+(+r.amt||0),0);
+  const rvTot=rv_.reduce((s,r)=>s+(+r.amt||0),0);
+  const real=svTot-rvTot;
+  $('ana-save').textContent=fmt(svTot);$('ana-inv').textContent=fmt(invTot);$('ana-rsv').textContent=fmt(rvTot);
+  const re=$('ana-real');re.textContent=fmt(real);re.className='sc-v '+(real>=0?'c3':'c4');
+  $('ana-save-body').innerHTML=sv_.length?sv_.map(r=>`<tr>
+    <td>${badge(r.cat,r.cat==='儲蓄'?'b3':'b5')}</td><td>${r.item||'—'}</td>
+    <td class="tn c3">${fmt(r.amt)}</td>
+    <td><button class="ab" onclick="editAna1('${r.id}')">Edit</button><button class="ab del" onclick="delR('ana_save','${r.id}',rAna)">Delete</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="4">No data yet</td></tr>';
+  $('ana-rsv-body').innerHTML=rv_.length?rv_.map(r=>`<tr>
+    <td>${badge(r.cat,r.cat==='備用金'?'b6':'b4')}</td><td>${r.item||'—'}</td>
+    <td class="tn c2">${fmt(r.amt)}</td><td class="tnt">${r.note||''}</td>
+    <td><button class="ab" onclick="editAna2('${r.id}')">Edit</button><button class="ab del" onclick="delR('ana_rsv','${r.id}',rAna)">Delete</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="5">No data yet</td></tr>';
+}
+function saveAna1(){const id=v('ana1-eid');const r={id:id||DB.id(),cat:v('ana1-cat')||'儲蓄',item:v('ana1-item'),amt:+(v('ana1-amt')||0)};if(!r.item){alert('Please fill in item name');return;}saveR('ana_save',id,r);closeM('m-ana1');clr(['ana1-eid','ana1-item','ana1-amt']);rAna();toast();}
+function editAna1(id){const r=DB.g('ana_save').find(x=>x.id===id);if(!r)return;sv('ana1-eid',r.id);$('ana1-cat').value=r.cat;sv('ana1-item',r.item);sv('ana1-amt',r.amt);openM('m-ana1');}
+function saveAna2(){const id=v('ana2-eid');const r={id:id||DB.id(),cat:v('ana2-cat')||'備用金',item:v('ana2-item'),amt:+(v('ana2-amt')||0),note:v('ana2-note')};if(!r.item){alert('Please fill in item name');return;}saveR('ana_rsv',id,r);closeM('m-ana2');clr(['ana2-eid','ana2-item','ana2-amt','ana2-note']);rAna();toast();}
+function editAna2(id){const r=DB.g('ana_rsv').find(x=>x.id===id);if(!r)return;sv('ana2-eid',r.id);$('ana2-cat').value=r.cat;sv('ana2-item',r.item);sv('ana2-amt',r.amt);sv('ana2-note',r.note||'');openM('m-ana2');}
+
+// STOCK
+function prevPnl(){const buy=+$('stk-buy').value||0,shares=+$('stk-shares').value||0,price=+$('stk-price').value||0;const pnl=(price-buy)*shares;const el=$('stk-prev');el.value=(pnl>=0?'+':'')+Math.round(pnl).toLocaleString();el.style.color=pnl>=0?'var(--a3)':'var(--a4)';}
+function rStk(){
+  const d=getData('s_stock','stocks');
+  const cost=d.reduce((s,r)=>s+(+r.buy)*(+r.shares),0);const mkt=d.reduce((s,r)=>s+(+r.price)*(+r.shares),0);const pnl=mkt-cost;
+  $('stk-cnt').textContent=d.length;$('stk-cost').textContent=fmt(cost);$('stk-mkt').textContent=fmt(mkt);
+  const pe=$('stk-pnl');pe.textContent=(pnl>=0?'+':'')+fmt(pnl);pe.className='sc-v '+(pnl>=0?'c3':'c4');
+  $('stk-body').innerHTML=d.length?d.map(r=>{
+    const c=(+r.buy)*(+r.shares),m=(+r.price)*(+r.shares),p=m-c,rt=c?(p/c*100).toFixed(2):0;
+    return`<tr>
+      <td><strong>${r.name||'—'}</strong></td><td>${r.code?badge(r.code,'b7'):'—'}</td>
+      <td class="tn">${(+r.buy).toFixed(2)}</td><td class="tn">${fmtN(r.shares)}</td>
+      <td class="tn">${fmt(c)}</td><td class="tn">${(+r.price).toFixed(2)}</td>
+      <td class="tn">${fmt(m)}</td><td class="tn ${p>=0?'tp':'tn-'}">${p>=0?'+':''}${fmt(p)}</td>
+      <td class="tn ${+rt>=0?'tp':'tn-'}">${rt}%</td>
+      <td><button class="ab" onclick="editStk('${r.id}')">Edit</button><button class="ab del" onclick="delStk('${r.id}')">Delete</button></td>
+    </tr>`;
+  }).join(''):'<tr class="loading-row"><td colspan="10">No data yet</td></tr>';
+}
+function saveStk(){const id=v('stk-eid');const r={id:id||DB.id(),name:v('stk-name'),code:v('stk-code'),buy:+(v('stk-buy')||0),shares:+(v('stk-shares')||0),price:+(v('stk-price')||0),note:v('stk-note')};if(!r.name||!r.shares){alert('Please fill in company and shares');return;}saveR('stocks',id,r);closeM('m-stk');clr(['stk-eid','stk-name','stk-code','stk-buy','stk-shares','stk-price','stk-note','stk-prev']);$('m-stk-t').textContent='新增股票持倉';rStk();toast();}
+function editStk(id){const d=getData('s_stock','stocks');const r=d.find(x=>x.id===id);if(!r)return;sv('stk-eid',r.id);sv('stk-name',r.name);sv('stk-code',r.code||'');sv('stk-buy',r.buy);sv('stk-shares',r.shares);sv('stk-price',r.price||'');sv('stk-note',r.note||'');$('m-stk-t').textContent='編輯股票持倉';prevPnl();openM('m-stk');}
+function delStk(id){if(!confirm('Delete this entry?'))return;DB.s('stocks',DB.g('stocks').filter(x=>x.id!==id));DB.s('s_stock',getData('s_stock','stocks').filter(x=>x.id!==id));rStk();toast('✓ Deleted');}
+
+// SETTINGS
+function rSettings(){
+  sv('sheet-id-input', SHEET_ID);
+  renderSheetMap();
+  updateSyncDetail();
+}
+function clearCache(){if(!confirm('Clear all sync cache?\n(Manually added local data is not affected)'))return;['s_wedding','s_ins_luke','s_ins_jamie','s_child_est','s_monthly','s_wealth','s_wealth_ana','s_stock'].forEach(k=>localStorage.removeItem(k));toast('✓ 快取已清除');}
+
+/* ══════ PWA INSTALL ══════ */
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  const btn=$('btn-pwa-install');if(btn){btn.style.display='inline-flex';}
+  $('pwa-status').textContent='Ready to install';
+});
+window.addEventListener('appinstalled',()=>{
+  $('pwa-status').textContent='✅ 已安裝！';deferredPrompt=null;
+});
+async function installPWA(){
+  if(!deferredPrompt){$('pwa-status').textContent='Use browser menu to install manually';return;}
+  deferredPrompt.prompt();const{outcome}=await deferredPrompt.userChoice;
+  $('pwa-status').textContent=outcome==='accepted'?'✅ Installing...':'Cancelled';deferredPrompt=null;
+}
+
+/* ══════ SERVICE WORKER ══════ */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+
+/* ══════ DEFAULT SNAPSHOTS ══════ */
+function initSnaps(){
+  if(DB.g('wl_snaps').length) return;
+  // Seed historical snapshots from spreadsheet data
+  DB.s('wl_snaps',[
+    {id:DB.id(),date:'2019-07-01',label:'2019 Q3',jc:2100000,cw:80000,total:2180000,note:'First labor pension check'},
+    {id:DB.id(),date:'2020-01-01',label:'2020 年初',jc:2800000,cw:95000,total:2895000,note:''},
+    {id:DB.id(),date:'2021-01-01',label:'2021 年初',jc:3500000,cw:110000,total:3610000,note:''},
+    {id:DB.id(),date:'2022-01-01',label:'2022 年初',jc:4200000,cw:120000,total:4320000,note:''},
+    {id:DB.id(),date:'2023-01-01',label:'2023 年初',jc:5100000,cw:130000,total:5230000,note:''},
+    {id:DB.id(),date:'2024-01-01',label:'2024 年初',jc:6200000,cw:130000,total:6330000,note:'Fubon fund + deposits increased'},
+    {id:DB.id(),date:'2025-01-01',label:'2025 年初',jc:7038551,cw:122252,total:7160803,note:'Incl. Mega / Shanghai / Fubon'},
+  ]);
+}
+
+/* ══════ INIT ══════ */
+SHEET_ID=DB.gv('sheet_id','');
+initSnaps();
+rHome();
+</script>
+</body>
+</html>
