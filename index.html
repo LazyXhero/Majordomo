@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MAJORDOMO">
+<meta name="apple-mobile-web-app-title" content="大總管">
 <meta name="theme-color" content="#0d0f14">
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>MAJORDOMO</title>
+<title>大總管</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -241,213 +241,97 @@ tr:hover td{background:rgba(91,142,245,.04);}
 <body>
 
 <nav class="topbar">
-  <div class="logo">🏠 MAJORDOMO</div>
+  <div class="logo">🏠 大總管</div>
   <div class="tabs">
-    <button class="tab on"  onclick="go('home')"      data-p="home">      📊 Overview</button>
-    <button class="tab"     onclick="go('wealth')"    data-p="wealth">    🏦 Assets</button>
-    <button class="tab"     onclick="go('wealth_ana')"data-p="wealth_ana">📈 Analysis</button>
-    <button class="tab"     onclick="go('stock')"     data-p="stock">     📉 Stocks</button>
-    <button class="tab"     onclick="go('child_est')" data-p="child_est"> 👶 Childcare</button>
-    <button class="tab"     onclick="go('monthly')"   data-p="monthly">   💰 Monthly</button>
-    <button class="tab"     onclick="go('ins_luke')"  data-p="ins_luke">  🛡️ Ins. Luke</button>
-    <button class="tab"     onclick="go('ins_jamie')" data-p="ins_jamie"> 🛡️ Ins. Jamie</button>
-    <button class="tab"     onclick="go('wedding')"   data-p="wedding">   💍 Wedding</button>
-    <button class="tab"     onclick="go('settings')"  data-p="settings">  ⚙️ Settings</button>
+    <button class="tab on"  onclick="go('home')"      data-p="home">      📊 總覽</button>
+    <button class="tab"     onclick="go('wealth')"    data-p="wealth">    🏦 財產統計</button>
+    <button class="tab"     onclick="go('wealth_ana')"data-p="wealth_ana">📈 財產分析</button>
+    <button class="tab"     onclick="go('stock')"     data-p="stock">     📉 股票</button>
+    <button class="tab"     onclick="go('child_est')" data-p="child_est"> 👶 育兒費</button>
+    <button class="tab"     onclick="go('monthly')"   data-p="monthly">   💰 每月花費</button>
+    <button class="tab"     onclick="go('ins_luke')"  data-p="ins_luke">  🛡️ 保險Luke</button>
+    <button class="tab"     onclick="go('ins_jamie')" data-p="ins_jamie"> 🛡️ 保險Jamie</button>
+    <button class="tab"     onclick="go('wedding')"   data-p="wedding">   💍 婚禮</button>
+    <button class="tab"     onclick="go('settings')"  data-p="settings">  ⚙️ 設定</button>
   </div>
 </nav>
 
-<div class="body">
-
-<!-- ══ HOME ══ -->
-<div id="pg-home" class="page on">
+<div class="body"><div id="pg-home" class="page on">
   <div class="ph">
     <div class="ph-l">
       <div class="ph-ico">📊</div>
-      <div><div class="ph-title">MAJORDOMO</div><div class="ph-sub" id="home-sub">Loading...</div></div>
+      <div><div class="ph-title">大總管</div><div class="ph-sub" id="home-sub">載入中...</div></div>
     </div>
-    <button class="btn-sync" id="home-sync-btn" onclick="syncAll()" style="padding:7px 14px;border-radius:8px;background:transparent;border:1px solid var(--br2);color:var(--t2);font-size:12px;cursor:pointer;font-family:var(--font);">🔄 Sync</button>
+    <button class="btn-sync" id="home-sync-btn" onclick="syncAll()" style="padding:7px 14px;border-radius:8px;background:transparent;border:1px solid var(--br2);color:var(--t2);font-size:12px;cursor:pointer;font-family:var(--font);">🔄 同步</button>
   </div>
   <div id="home-sync-bar" class="sync-bar" style="display:none">
     <div class="sync-dot spin" id="home-dot"></div>
-    <span class="sync-text" id="home-sync-text">Syncing...</span>
+    <span class="sync-text" id="home-sync-text">同步中...</span>
     <span style="font-size:11px;color:var(--t3)" id="home-sync-time"></span>
   </div>
   <div class="stats c4">
-    <div class="sc"><div class="sc-l">Wedding</div><div class="sc-v c2" id="h-wed">—</div></div>
-    <div class="sc"><div class="sc-l">Luke Policies</div><div class="sc-v c1" id="h-insl">—</div></div>
-    <div class="sc"><div class="sc-l">JC Assets</div><div class="sc-v c3" id="h-wealth">—</div></div>
-    <div class="sc"><div class="sc-l">Stock P&L</div><div class="sc-v" id="h-pnl">—</div></div>
+    <div class="sc"><div class="sc-l">婚禮花費</div><div class="sc-v c2" id="h-wed">—</div></div>
+    <div class="sc"><div class="sc-l">Luke 保單</div><div class="sc-v c1" id="h-insl">—</div></div>
+    <div class="sc"><div class="sc-l">JC 財產</div><div class="sc-v c3" id="h-wealth">—</div></div>
+    <div class="sc"><div class="sc-l">股票損益</div><div class="sc-v" id="h-pnl">—</div></div>
   </div>
   <div class="dash-grid">
-    <div class="dcard dc2" onclick="go('wedding')"><div class="dico">💍</div><div class="dtitle">Wedding</div><div class="ddesc">Expenses incl. banquet, dress, gifts</div><div class="dval c2" id="dc-wed">—</div><div class="dvlab">Total spent</div></div>
-    <div class="dcard dc1" onclick="go('ins_luke')"><div class="dico">🛡️</div><div class="dtitle">Insurance Luke</div><div class="ddesc">Farglory / AIA / Fubon / Global</div><div class="dval c1" id="dc-insl">—</div><div class="dvlab">Policies</div></div>
-    <div class="dcard dc5" onclick="go('ins_jamie')"><div class="dico">🛡️</div><div class="dtitle">Insurance Jamie</div><div class="ddesc">Mercuries / Shin Kong / Homeway</div><div class="dval c5" id="dc-insj">—</div><div class="dvlab">Policies</div></div>
-    <div class="dcard dc3" onclick="go('child_est')"><div class="dico">👶</div><div class="dtitle">Childcare Est.</div><div class="ddesc">Monthly cost by school plan</div><div class="dval c3" id="dc-child">—</div><div class="dvlab">Plans</div></div>
-    <div class="dcard dc6" onclick="go('monthly')"><div class="dico">💰</div><div class="dtitle">Monthly Budget</div><div class="ddesc">Wang + Ya household spending</div><div class="dval c6" id="dc-mo">—</div><div class="dvlab">Monthly total</div></div>
-    <div class="dcard dc7" onclick="go('wealth')"><div class="dico">🏦</div><div class="dtitle">Assets</div><div class="ddesc">Deposits / savings / FX / investments</div><div class="dval c7" id="dc-wealth">—</div><div class="dvlab">JC total assets</div></div>
-    <div class="dcard dc4" onclick="go('wealth_ana')"><div class="dico">📈</div><div class="dtitle">Asset Analysis</div><div class="ddesc">Liquid / reserve / planned expenses</div><div class="dval c4" id="dc-real">—</div><div class="dvlab">Net available</div></div>
-    <div class="dcard dc5" onclick="go('stock')"><div class="dico">📉</div><div class="dtitle">Stock Portfolio</div><div class="ddesc">Cost basis, market value, P&L</div><div class="dval" id="dc-pnl">—</div><div class="dvlab">Unrealized P&L</div></div>
+    <div class="dcard dc7" onclick="go('wealth')"><div class="dico">🏦</div><div class="dtitle">財產統計</div><div class="ddesc">定存/活存/外幣/投資</div><div class="dval c7" id="dc-wealth">—</div><div class="dvlab">JC 總資產</div></div>
+    <div class="dcard dc4" onclick="go('wealth_ana')"><div class="dico">📈</div><div class="dtitle">財產分析</div><div class="ddesc">可動用/備用/預計支出</div><div class="dval c4" id="dc-real">—</div><div class="dvlab">真正可動用</div></div>
+    <div class="dcard dc5" onclick="go('stock')"><div class="dico">📉</div><div class="dtitle">股票持倉</div><div class="ddesc">持倉成本、現值、損益</div><div class="dval" id="dc-pnl">—</div><div class="dvlab">未實現損益</div></div>
+    <div class="dcard dc3" onclick="go('child_est')"><div class="dico">👶</div><div class="dtitle">育兒費預估</div><div class="ddesc">各學齡月費方案比較</div><div class="dval c3" id="dc-child">—</div><div class="dvlab">方案數</div></div>
+    <div class="dcard dc6" onclick="go('monthly')"><div class="dico">💰</div><div class="dtitle">每月花費</div><div class="ddesc">王+亞 家庭月支出規劃</div><div class="dval c6" id="dc-mo">—</div><div class="dvlab">月合計</div></div>
+    <div class="dcard dc1" onclick="go('ins_luke')"><div class="dico">🛡️</div><div class="dtitle">保險 Luke</div><div class="ddesc">遠雄/友邦/富邦/全球 保單</div><div class="dval c1" id="dc-insl">—</div><div class="dvlab">保單數量</div></div>
+    <div class="dcard dc5" onclick="go('ins_jamie')"><div class="dico">🛡️</div><div class="dtitle">保險 Jamie</div><div class="ddesc">三商/新光/宏泰 保單</div><div class="dval c5" id="dc-insj">—</div><div class="dvlab">保單數量</div></div>
+    <div class="dcard dc2" onclick="go('wedding')"><div class="dico">💍</div><div class="dtitle">婚禮紀錄</div><div class="ddesc">喜宴、婚紗、禮品花費明細</div><div class="dval c2" id="dc-wed">—</div><div class="dvlab">婚禮總花費</div></div>
   </div>
 </div>
 
 <!-- ══ WEDDING ══ -->
-<div id="pg-wedding" class="page">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ico">💍</div><div><div class="ph-title">Wedding</div><div class="ph-sub">2015 wedding expenses</div></div></div>
-    <button class="btn-add" onclick="openM('m-wed')">＋ Add</button>
-  </div>
-  <div id="wed-sync" class="sync-bar" style="display:none"><div class="sync-dot spin"></div><span class="sync-text">Loading from Google Sheets...</span></div>
-  <div class="stats c4">
-    <div class="sc"><div class="sc-l">Total</div><div class="sc-v c2" id="wed-total">—</div></div>
-    <div class="sc"><div class="sc-l">Wang (Groom)</div><div class="sc-v c1" id="wed-wang">—</div></div>
-    <div class="sc"><div class="sc-l">Ya (Bride)</div><div class="sc-v c5" id="wed-ya">—</div></div>
-    <div class="sc"><div class="sc-l">Records</div><div class="sc-v c3" id="wed-cnt">—</div></div>
-  </div>
-  <div class="pills" id="wed-pills"></div>
-  <div class="tw">
-    <div class="tb-top"><span class="tb-title">Wedding Expenses</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('wed-tb',this.value)"></div>
-    <div class="tbl-wrap"><table id="wed-tb">
-      <thead><tr><th>Category</th><th>Item / Brand</th><th>Total</th><th>Ya Paid</th><th>Wang Paid</th><th>Note</th><th>Actions</th></tr></thead>
-      <tbody id="wed-body"><tr class="loading-row"><td colspan="7">⏳ Please connect Google Sheets in Settings</td></tr></tbody>
-    </table></div>
-  </div>
-</div>
-
-<!-- ══ INS LUKE ══ -->
-<div id="pg-ins_luke" class="page">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ico">🛡️</div><div><div class="ph-title">Insurance — Luke</div><div class="ph-sub">All policies + claims</div></div></div>
-    <button class="btn-add" onclick="openM('m-insl')">＋ Add Policy</button>
-  </div>
-  <div class="stats c3">
-    <div class="sc"><div class="sc-l">Policies</div><div class="sc-v c1" id="insl-cnt">—</div></div>
-    <div class="sc"><div class="sc-l">Annual Premium</div><div class="sc-v c2" id="insl-annual">—</div></div>
-    <div class="sc"><div class="sc-l">Monthly Avg.</div><div class="sc-v c4" id="insl-mo">—</div></div>
-  </div>
-  <div class="pills" id="insl-pills"></div>
-  <div class="tw">
-    <div class="tb-top"><span class="tb-title">Policy Details</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('insl-tb',this.value)"></div>
-    <div class="tbl-wrap"><table id="insl-tb">
-      <thead><tr><th>Type</th><th>Company</th><th>Policy Name</th><th>Code / Coverage</th><th>Term</th><th>Until Age</th><th>Annual</th><th>Period</th><th>Actions</th></tr></thead>
-      <tbody id="insl-body"><tr class="loading-row"><td colspan="9">⏳ Connect Google Sheets in Settings</td></tr></tbody>
-    </table></div>
-  </div>
-  <div class="tw">
-    <div class="tb-top"><span class="tb-title">🏥 Claims</span><button class="btn-add" style="padding:5px 12px;font-size:12px" onclick="openM('m-claim')">＋ Add</button></div>
-    <div class="tbl-wrap"><table id="claim-tb">
-      <thead><tr><th>Date</th><th>Reason</th><th>Insurer</th><th>Claim Amount</th><th>Note</th><th>Actions</th></tr></thead>
-      <tbody id="claim-body"></tbody>
-    </table></div>
-  </div>
-</div>
-
-<!-- ══ INS JAMIE ══ -->
-<div id="pg-ins_jamie" class="page">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ico">🛡️</div><div><div class="ph-title">Insurance — Jamie</div><div class="ph-sub">Mercuries / Shin Kong / Homeway</div></div></div>
-    <button class="btn-add" onclick="openM('m-insj')">＋ Add Policy</button>
-  </div>
-  <div class="stats c3">
-    <div class="sc"><div class="sc-l">Policies</div><div class="sc-v c5" id="insj-cnt">—</div></div>
-    <div class="sc"><div class="sc-l">Total Coverage</div><div class="sc-v c3" id="insj-total">—</div></div>
-    <div class="sc"><div class="sc-l">Types</div><div class="sc-v c7" id="insj-types">—</div></div>
-  </div>
-  <div class="pills" id="insj-pills"></div>
-  <div class="tw">
-    <div class="tb-top"><span class="tb-title">Jamie Policy Details</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('insj-tb',this.value)"></div>
-    <div class="tbl-wrap"><table id="insj-tb">
-      <thead><tr><th>Type</th><th>Company</th><th>Policy Name</th><th>Coverage</th><th>Start Date</th><th>End Date</th><th>Benefits</th><th>Actions</th></tr></thead>
-      <tbody id="insj-body"><tr class="loading-row"><td colspan="8">⏳ Connect Google Sheets in Settings</td></tr></tbody>
-    </table></div>
-  </div>
-</div>
-
-<!-- ══ CHILD EST ══ -->
-<div id="pg-child_est" class="page">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ico">👶</div><div><div class="ph-title">Childcare Estimates</div><div class="ph-sub">Monthly cost by school &amp; stage</div></div></div>
-    <button class="btn-add" onclick="openM('m-child')">＋ Add Plan</button>
-  </div>
-  <div class="stats c4">
-    <div class="sc"><div class="sc-l">Plans</div><div class="sc-v c3" id="child-cnt">—</div></div>
-    <div class="sc"><div class="sc-l">Min / Month</div><div class="sc-v c7" id="child-min">—</div></div>
-    <div class="sc"><div class="sc-l">Max / Month</div><div class="sc-v c2" id="child-max">—</div></div>
-    <div class="sc"><div class="sc-l">Avg / Month</div><div class="sc-v c5" id="child-avg">—</div></div>
-  </div>
-  <div class="tw">
-    <div class="tb-top"><span class="tb-title">Plan Comparison by Stage</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('child-tb',this.value)"></div>
-    <div class="tbl-wrap"><table id="child-tb">
-      <thead><tr><th>Stage</th><th>School / Plan</th><th>Food/Mo</th><th>Living/Mo</th><th>Tuition/Mo</th><th>School Fee/Mo</th><th>Total/Mo</th><th>Note</th><th>Actions</th></tr></thead>
-      <tbody id="child-body"><tr class="loading-row"><td colspan="9">⏳ Connect Google Sheets in Settings</td></tr></tbody>
-    </table></div>
-  </div>
-</div>
-
-<!-- ══ MONTHLY ══ -->
-<div id="pg-monthly" class="page">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ico">💰</div><div><div class="ph-title">Monthly Budget</div><div class="ph-sub">Wang + Ya monthly spending plan</div></div></div>
-    <button class="btn-add" onclick="openM('m-mo')">＋ Add Item</button>
-  </div>
-  <div class="stats c3">
-    <div class="sc"><div class="sc-l">Wang / Month</div><div class="sc-v c1" id="mo-wang">—</div></div>
-    <div class="sc"><div class="sc-l">Ya / Month</div><div class="sc-v c5" id="mo-ya">—</div></div>
-    <div class="sc"><div class="sc-l">Total / Month</div><div class="sc-v c2" id="mo-total">—</div></div>
-  </div>
-  <div class="tw">
-    <div class="tb-top"><span class="tb-title">Monthly Breakdown</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('mo-tb',this.value)"></div>
-    <div class="tbl-wrap"><table id="mo-tb">
-      <thead><tr><th>Category</th><th>Item</th><th>Wang/Mo</th><th>Ya/Mo</th><th>Total/Mo</th><th>Note</th><th>Actions</th></tr></thead>
-      <tbody id="mo-body"><tr class="loading-row"><td colspan="7">⏳ Connect Google Sheets in Settings</td></tr></tbody>
-    </table></div>
-  </div>
-</div>
-
-<!-- ══ WEALTH ══ -->
 <div id="pg-wealth" class="page">
   <div class="ph">
-    <div class="ph-l"><div class="ph-ico">🏦</div><div><div class="ph-title">Assets</div><div class="ph-sub">CW (Wang) &amp; JC (Ya) holdings</div></div></div>
+    <div class="ph-l"><div class="ph-ico">🏦</div><div><div class="ph-title">財產統計</div><div class="ph-sub">CW (王) & JC (亞) 資產</div></div></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn-add" onclick="openM('m-wl')">＋ Add Asset</button>
-      <button class="btn-add" style="background:var(--a3)" onclick="openSnapModal()">📸 Snapshot</button>
+      <button class="btn-add" style="background:var(--a3)" onclick="openSnapModal()">📸 記錄快照</button>
     </div>
   </div>
   <div class="pills" id="wl-pills"></div>
   <div class="stats c4">
-    <div class="sc"><div class="sc-l">CW (Wang)</div><div class="sc-v c6" id="wl-cw">—</div></div>
-    <div class="sc"><div class="sc-l">JC (Ya)</div><div class="sc-v c3" id="wl-jc">—</div></div>
-    <div class="sc"><div class="sc-l">JC Change</div><div class="sc-v" id="wl-delta">—</div></div>
-    <div class="sc"><div class="sc-l">Records</div><div class="sc-v c7" id="wl-cnt">—</div></div>
+    <div class="sc"><div class="sc-l">CW (王)</div><div class="sc-v c6" id="wl-cw">—</div></div>
+    <div class="sc"><div class="sc-l">JC (亞)</div><div class="sc-v c3" id="wl-jc">—</div></div>
+    <div class="sc"><div class="sc-l">JC 本月變化</div><div class="sc-v" id="wl-delta">—</div></div>
+    <div class="sc"><div class="sc-l">筆數</div><div class="sc-v c7" id="wl-cnt">—</div></div>
   </div>
   <div class="tw">
-    <div class="tb-top"><span class="tb-title">Asset Details</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('wl-tb',this.value)"></div>
+    <div class="tb-top"><span class="tb-title">資產明細</span><input class="si" placeholder="🔍 搜尋..." onkeyup="srch('wl-tb',this.value)"></div>
     <div class="tbl-wrap"><table id="wl-tb">
-      <thead><tr><th>Type</th><th>Bank / Account</th><th>Owner</th><th>TWD</th><th>Foreign</th><th>Term</th><th>Rate</th><th>Note</th><th>Actions</th></tr></thead>
-      <tbody id="wl-body"><tr class="loading-row"><td colspan="9">⏳ Connect Google Sheets in Settings</td></tr></tbody>
+      <thead><tr><th>種類</th><th>銀行/帳戶</th><th>持有人</th><th>台幣</th><th>外幣</th><th>定存期間</th><th>利率</th><th>備註</th><th>操作</th></tr></thead>
+      <tbody id="wl-body"><tr class="loading-row"><td colspan="9">⏳ 請先在設定頁面連接 Google Sheets</td></tr></tbody>
     </table></div>
   </div>
 
   <!-- ── 財產異動圖表 ── -->
   <div class="tw">
     <div class="tb-top">
-      <span class="tb-title">📈 Asset History Chart</span>
+      <span class="tb-title">📈 財產異動圖表</span>
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
         <select id="chart-owner" class="si" style="width:120px" onchange="drawWealthChart()">
           <option value="JC">JC (亞)</option>
           <option value="CW">CW (王)</option>
-          <option value="total">Combined</option>
+          <option value="total">合計</option>
         </select>
         <select id="chart-period" class="si" style="width:100px" onchange="drawWealthChart()">
-          <option value="12">Last 12</option>
-          <option value="24">Last 24</option>
-          <option value="all">All</option>
+          <option value="12">近12筆</option>
+          <option value="24">近24筆</option>
+          <option value="all">全部</option>
         </select>
       </div>
     </div>
     <div style="padding:16px 16px 8px">
       <canvas id="wealth-chart" style="width:100%;height:220px;display:block"></canvas>
       <div id="chart-empty" style="text-align:center;color:var(--t3);font-size:13px;padding:40px 0;display:none">
-        No snapshots yet — click 📸 above to start tracking
+        尚無快照記錄 — 點上方「📸 記錄快照」開始追蹤
       </div>
     </div>
   </div>
@@ -455,11 +339,11 @@ tr:hover td{background:rgba(91,142,245,.04);}
   <!-- ── 編輯紀錄 ── -->
   <div class="tw">
     <div class="tb-top">
-      <span class="tb-title">📝 Edit Log</span>
-      <button class="ab" onclick="clearWlLog()" style="color:var(--a4)">Clear Log</button>
+      <span class="tb-title">📝 財產編輯紀錄</span>
+      <button class="ab" onclick="clearWlLog()" style="color:var(--a4)">清除紀錄</button>
     </div>
     <div class="tbl-wrap"><table id="wl-log-tb">
-      <thead><tr><th>Time</th><th>Action</th><th>Bank / Account</th><th>Type</th><th>Before</th><th>After</th><th>Note</th></tr></thead>
+      <thead><tr><th>時間</th><th>操作</th><th>銀行/帳戶</th><th>種類</th><th>變更前</th><th>變更後</th><th>備註</th></tr></thead>
       <tbody id="wl-log-body"></tbody>
     </table></div>
   </div>
@@ -467,11 +351,11 @@ tr:hover td{background:rgba(91,142,245,.04);}
   <!-- ── 財產快照紀錄 ── -->
   <div class="tw">
     <div class="tb-top">
-      <span class="tb-title">📸 Snapshots</span>
-      <button class="ab del" onclick="clearSnaps()">Clear All</button>
+      <span class="tb-title">📸 財產快照紀錄</span>
+      <button class="ab del" onclick="clearSnaps()">清除快照</button>
     </div>
     <div class="tbl-wrap"><table id="snap-tb">
-      <thead><tr><th>Date</th><th>Label</th><th>JC (Ya)</th><th>CW (Wang)</th><th>Total</th><th>Note</th><th>Actions</th></tr></thead>
+      <thead><tr><th>日期</th><th>標籤</th><th>JC (亞)</th><th>CW (王)</th><th>合計</th><th>備註</th><th>操作</th></tr></thead>
       <tbody id="snap-body"></tbody>
     </table></div>
   </div>
@@ -480,26 +364,26 @@ tr:hover td{background:rgba(91,142,245,.04);}
 <!-- ══ WEALTH ANA ══ -->
 <div id="pg-wealth_ana" class="page">
   <div class="ph">
-    <div class="ph-l"><div class="ph-ico">📈</div><div><div class="ph-title">Asset Analysis</div><div class="ph-sub">Liquid / reserve / planned expenses</div></div></div>
+    <div class="ph-l"><div class="ph-ico">📈</div><div><div class="ph-title">財產分析</div><div class="ph-sub">可動用 / 備用 / 預計支出</div></div></div>
   </div>
   <div class="stats c4">
-    <div class="sc"><div class="sc-l">Total Savings</div><div class="sc-v c3" id="ana-save">—</div></div>
-    <div class="sc"><div class="sc-l">Investments</div><div class="sc-v c1" id="ana-inv">—</div></div>
-    <div class="sc"><div class="sc-l">Reserve + Planned</div><div class="sc-v c2" id="ana-rsv">—</div></div>
-    <div class="sc"><div class="sc-l">Net Available</div><div class="sc-v" id="ana-real">—</div></div>
+    <div class="sc"><div class="sc-l">儲蓄總計</div><div class="sc-v c3" id="ana-save">—</div></div>
+    <div class="sc"><div class="sc-l">投資保險</div><div class="sc-v c1" id="ana-inv">—</div></div>
+    <div class="sc"><div class="sc-l">備用+預計支出</div><div class="sc-v c2" id="ana-rsv">—</div></div>
+    <div class="sc"><div class="sc-l">真正可動用</div><div class="sc-v" id="ana-real">—</div></div>
   </div>
   <div class="grid2">
     <div class="tw" style="margin:0">
-      <div class="tb-top"><span class="tb-title">💾 Savings / Investments</span><button class="btn-add" style="padding:5px 12px;font-size:12px" onclick="openM('m-ana1')">＋</button></div>
+      <div class="tb-top"><span class="tb-title">💾 儲蓄 / 投資</span><button class="btn-add" style="padding:5px 12px;font-size:12px" onclick="openM('m-ana1')">＋</button></div>
       <div class="tbl-wrap"><table id="ana-save-tb">
-        <thead><tr><th>Category</th><th>Item</th><th>Amount</th><th>Actions</th></tr></thead>
+        <thead><tr><th>類別</th><th>項目</th><th>金額</th><th>操作</th></tr></thead>
         <tbody id="ana-save-body"></tbody>
       </table></div>
     </div>
     <div class="tw" style="margin:0">
-      <div class="tb-top"><span class="tb-title">🏦 Reserve / Planned Expenses</span><button class="btn-add" style="padding:5px 12px;font-size:12px" onclick="openM('m-ana2')">＋</button></div>
+      <div class="tb-top"><span class="tb-title">🏦 備用金 / 支出規劃</span><button class="btn-add" style="padding:5px 12px;font-size:12px" onclick="openM('m-ana2')">＋</button></div>
       <div class="tbl-wrap"><table id="ana-rsv-tb">
-        <thead><tr><th>Category</th><th>Item</th><th>Amount</th><th>Note</th><th>Actions</th></tr></thead>
+        <thead><tr><th>類別</th><th>項目</th><th>金額</th><th>備註</th><th>操作</th></tr></thead>
         <tbody id="ana-rsv-body"></tbody>
       </table></div>
     </div>
@@ -509,80 +393,193 @@ tr:hover td{background:rgba(91,142,245,.04);}
 <!-- ══ STOCK ══ -->
 <div id="pg-stock" class="page">
   <div class="ph">
-    <div class="ph-l"><div class="ph-ico">📉</div><div><div class="ph-title">Stock Portfolio</div><div class="ph-sub">Cost basis, market value, P&amp;L</div></div></div>
+    <div class="ph-l"><div class="ph-ico">📉</div><div><div class="ph-title">股票持倉</div><div class="ph-sub">持倉成本、現值、損益</div></div></div>
     <button class="btn-add" onclick="openM('m-stk')">＋ Add Position</button>
   </div>
   <div class="stats c4">
-    <div class="sc"><div class="sc-l">Holdings</div><div class="sc-v c1" id="stk-cnt">—</div></div>
-    <div class="sc"><div class="sc-l">Cost Basis</div><div class="sc-v c2" id="stk-cost">—</div></div>
-    <div class="sc"><div class="sc-l">Market Value</div><div class="sc-v c7" id="stk-mkt">—</div></div>
-    <div class="sc"><div class="sc-l">Unrealized P&L</div><div class="sc-v" id="stk-pnl">—</div></div>
+    <div class="sc"><div class="sc-l">持倉支數</div><div class="sc-v c1" id="stk-cnt">—</div></div>
+    <div class="sc"><div class="sc-l">帳面成本</div><div class="sc-v c2" id="stk-cost">—</div></div>
+    <div class="sc"><div class="sc-l">現值</div><div class="sc-v c7" id="stk-mkt">—</div></div>
+    <div class="sc"><div class="sc-l">未實現損益</div><div class="sc-v" id="stk-pnl">—</div></div>
   </div>
   <div class="tw">
-    <div class="tb-top"><span class="tb-title">Portfolio Details</span><input class="si" placeholder="🔍 Search..." onkeyup="srch('stk-tb',this.value)"></div>
+    <div class="tb-top"><span class="tb-title">持倉明細</span><input class="si" placeholder="🔍 搜尋..." onkeyup="srch('stk-tb',this.value)"></div>
     <div class="tbl-wrap"><table id="stk-tb">
-      <thead><tr><th>Company</th><th>Ticker</th><th>Avg Cost</th><th>Shares</th><th>Cost Basis</th><th>Price</th><th>Mkt Value</th><th>P&L</th><th>Return</th><th>Actions</th></tr></thead>
-      <tbody id="stk-body"><tr class="loading-row"><td colspan="10">⏳ Connect Google Sheets in Settings</td></tr></tbody>
+      <thead><tr><th>公司</th><th>代號</th><th>買進均價</th><th>股數</th><th>成本</th><th>現價</th><th>現值</th><th>損益</th><th>報酬率</th><th>操作</th></tr></thead>
+      <tbody id="stk-body"><tr class="loading-row"><td colspan="10">⏳ 請先在設定頁面連接 Google Sheets</td></tr></tbody>
     </table></div>
   </div>
 </div>
 
 <!-- ══ SETTINGS ══ -->
+<div id="pg-child_est" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">👶</div><div><div class="ph-title">育兒費預估</div><div class="ph-sub">各學齡月費方案比較</div></div></div>
+    <button class="btn-add" onclick="openM('m-child')">＋ Add Plan</button>
+  </div>
+  <div class="stats c4">
+    <div class="sc"><div class="sc-l">方案數</div><div class="sc-v c3" id="child-cnt">—</div></div>
+    <div class="sc"><div class="sc-l">最低月費</div><div class="sc-v c7" id="child-min">—</div></div>
+    <div class="sc"><div class="sc-l">最高月費</div><div class="sc-v c2" id="child-max">—</div></div>
+    <div class="sc"><div class="sc-l">平均月費</div><div class="sc-v c5" id="child-avg">—</div></div>
+  </div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">各學齡方案比較</span><input class="si" placeholder="🔍 搜尋..." onkeyup="srch('child-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="child-tb">
+      <thead><tr><th>學齡</th><th>學校方案</th><th>食/月</th><th>衣住行/月</th><th>才藝補習/月</th><th>學費/月</th><th>合計/月</th><th>備註</th><th>操作</th></tr></thead>
+      <tbody id="child-body"><tr class="loading-row"><td colspan="9">⏳ 請先在設定頁面連接 Google Sheets</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ MONTHLY ══ -->
+<div id="pg-monthly" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">💰</div><div><div class="ph-title">每月花費預估</div><div class="ph-sub">王 + 亞 月支出規劃</div></div></div>
+    <button class="btn-add" onclick="openM('m-mo')">＋ Add Item</button>
+  </div>
+  <div class="stats c3">
+    <div class="sc"><div class="sc-l">王 每月</div><div class="sc-v c1" id="mo-wang">—</div></div>
+    <div class="sc"><div class="sc-l">亞 每月</div><div class="sc-v c5" id="mo-ya">—</div></div>
+    <div class="sc"><div class="sc-l">合計/月</div><div class="sc-v c2" id="mo-total">—</div></div>
+  </div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">月支出明細</span><input class="si" placeholder="🔍 搜尋..." onkeyup="srch('mo-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="mo-tb">
+      <thead><tr><th>類別</th><th>項目</th><th>王/月</th><th>亞/月</th><th>合計/月</th><th>備註</th><th>操作</th></tr></thead>
+      <tbody id="mo-body"><tr class="loading-row"><td colspan="7">⏳ 請先在設定頁面連接 Google Sheets</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ WEALTH ══ -->
+<div id="pg-ins_luke" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">🛡️</div><div><div class="ph-title">保險 — Luke</div><div class="ph-sub">全部保單 + 理賠紀錄</div></div></div>
+    <button class="btn-add" onclick="openM('m-insl')">＋ Add Policy</button>
+  </div>
+  <div class="stats c3">
+    <div class="sc"><div class="sc-l">保單總數</div><div class="sc-v c1" id="insl-cnt">—</div></div>
+    <div class="sc"><div class="sc-l">年繳總保費</div><div class="sc-v c2" id="insl-annual">—</div></div>
+    <div class="sc"><div class="sc-l">月均保費</div><div class="sc-v c4" id="insl-mo">—</div></div>
+  </div>
+  <div class="pills" id="insl-pills"></div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">保單明細</span><input class="si" placeholder="🔍 搜尋..." onkeyup="srch('insl-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="insl-tb">
+      <thead><tr><th>種類</th><th>公司</th><th>保險名稱</th><th>代號/保額</th><th>年期</th><th>保障至</th><th>年繳</th><th>合約期間</th><th>操作</th></tr></thead>
+      <tbody id="insl-body"><tr class="loading-row"><td colspan="9">⏳ 請先在設定頁面連接 Google Sheets</td></tr></tbody>
+    </table></div>
+  </div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">🏥 理賠紀錄</span><button class="btn-add" style="padding:5px 12px;font-size:12px" onclick="openM('m-claim')">＋ Add</button></div>
+    <div class="tbl-wrap"><table id="claim-tb">
+      <thead><tr><th>日期</th><th>事由</th><th>保險公司</th><th>理賠金額</th><th>備註</th><th>操作</th></tr></thead>
+      <tbody id="claim-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ INS JAMIE ══ -->
+<div id="pg-ins_jamie" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">🛡️</div><div><div class="ph-title">保險 — Jamie (亞)</div><div class="ph-sub">三商/新光/宏泰 保單</div></div></div>
+    <button class="btn-add" onclick="openM('m-insj')">＋ Add Policy</button>
+  </div>
+  <div class="stats c3">
+    <div class="sc"><div class="sc-l">保單總數</div><div class="sc-v c5" id="insj-cnt">—</div></div>
+    <div class="sc"><div class="sc-l">總保額</div><div class="sc-v c3" id="insj-total">—</div></div>
+    <div class="sc"><div class="sc-l">種類數</div><div class="sc-v c7" id="insj-types">—</div></div>
+  </div>
+  <div class="pills" id="insj-pills"></div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">Jamie 保單明細</span><input class="si" placeholder="🔍 搜尋..." onkeyup="srch('insj-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="insj-tb">
+      <thead><tr><th>種類</th><th>公司</th><th>保險名稱</th><th>保額</th><th>生效日期</th><th>到期日期</th><th>保障項目</th><th>操作</th></tr></thead>
+      <tbody id="insj-body"><tr class="loading-row"><td colspan="8">⏳ 請先在設定頁面連接 Google Sheets</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ CHILD EST ══ -->
+<div id="pg-wedding" class="page">
+  <div class="ph">
+    <div class="ph-l"><div class="ph-ico">💍</div><div><div class="ph-title">婚禮紀錄</div><div class="ph-sub">2015 婚禮各項花費</div></div></div>
+    <button class="btn-add" onclick="openM('m-wed')">＋ Add</button>
+  </div>
+  <div id="wed-sync" class="sync-bar" style="display:none"><div class="sync-dot spin"></div><span class="sync-text">從 Google Sheets 讀取中...</span></div>
+  <div class="stats c4">
+    <div class="sc"><div class="sc-l">總花費</div><div class="sc-v c2" id="wed-total">—</div></div>
+    <div class="sc"><div class="sc-l">男方(王)</div><div class="sc-v c1" id="wed-wang">—</div></div>
+    <div class="sc"><div class="sc-l">女方(亞)</div><div class="sc-v c5" id="wed-ya">—</div></div>
+    <div class="sc"><div class="sc-l">筆數</div><div class="sc-v c3" id="wed-cnt">—</div></div>
+  </div>
+  <div class="pills" id="wed-pills"></div>
+  <div class="tw">
+    <div class="tb-top"><span class="tb-title">婚禮花費明細</span><input class="si" placeholder="🔍 搜尋..." onkeyup="srch('wed-tb',this.value)"></div>
+    <div class="tbl-wrap"><table id="wed-tb">
+      <thead><tr><th>項目</th><th>細項/品牌</th><th>總價</th><th>亞付</th><th>王付</th><th>備註</th><th>操作</th></tr></thead>
+      <tbody id="wed-body"><tr class="loading-row"><td colspan="7">⏳ Please connect Google Sheets in Settings</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ INS LUKE ══ -->
 <div id="pg-settings" class="page">
   <div class="ph">
-    <div class="ph-l"><div class="ph-ico">⚙️</div><div><div class="ph-title">Settings</div><div class="ph-sub">Connect your Google Sheets data source</div></div></div>
+    <div class="ph-l"><div class="ph-ico">⚙️</div><div><div class="ph-title">設定</div><div class="ph-sub">連接 Google Sheets 資料來源</div></div></div>
   </div>
 
   <div class="setup-banner">
-    <h3>🔗 Connect your Google Sheets</h3>
-    <p>One-time setup. After connecting, any updates you make in Google Sheets will sync to this app on refresh.</p>
+    <h3>🔗 連接你的 Google Sheets</h3>
+    <p>只需要做一次設定，之後你在 Google Sheets 更新任何數字，APP 重新整理就會自動同步。</p>
     <ol class="setup-steps">
-      <li>Open your Google Sheets → click <strong>File → Share → Share with others</strong></li>
-      <li>Change access to <strong>Anyone with the link</strong> can <strong>View</strong>, then copy the link</li>
-      <li>Find the Spreadsheet ID — the part between <code>/d/</code> and <code>/edit</code> in the URL<br>e.g. <code>https://docs.google.com/spreadsheets/d/<strong>1BxiMVs0XRA5...</strong>/edit</code></li>
-      <li>Paste the ID below and click <strong>Connect</strong></li>
+      <li>打開你的 Google Sheets，點上方選單 <strong>「檔案」→「共用」→「共用給其他人」</strong></li>
+      <li>將存取權限改為 <strong>「知道連結的任何人」可以「檢視」</strong>，然後複製連結</li>
+      <li>從連結中找到 Spreadsheet ID（<code>/d/</code> 和 <code>/edit</code> 之間的部分）</li>
+      <li>Paste the ID below and click <strong>連接</strong></li>
     </ol>
     <div class="sid-row">
-      <input class="sid-input" id="sheet-id-input" placeholder="Paste Spreadsheet ID here..." value="">
-      <button class="btn-connect" id="btn-connect" onclick="connectSheet()">Connect</button>
+      <input class="sid-input" id="sheet-id-input" placeholder="貼上 Spreadsheet ID..." value="">
+      <button class="btn-connect" id="btn-connect" onclick="connectSheet()">連接</button>
     </div>
     <div id="connect-status" style="margin-top:12px;font-size:12px;color:var(--t3);"></div>
   </div>
 
   <!-- Sheet name mapping -->
   <div class="tw">
-    <div class="tb-top"><span class="tb-title">📋 Sheet Tab Mapping</span></div>
+    <div class="tb-top"><span class="tb-title">📋 分頁名稱對應設定</span></div>
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Module</th><th>Your Google Sheets Tab Name</th><th>Status</th></tr></thead>
+        <thead><tr><th>APP 功能</th><th>你的 Google Sheets 分頁名稱</th><th>狀態</th></tr></thead>
         <tbody id="sheet-map-body"></tbody>
       </table>
     </div>
   </div>
 
   <div class="tw">
-    <div class="tb-top"><span class="tb-title">📱 Install as App</span></div>
+    <div class="tb-top"><span class="tb-title">📱 安裝為 APP</span></div>
     <div style="padding:16px">
       <div style="font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:14px">
-        <strong style="color:var(--t);display:block;margin-bottom:8px">💻 Desktop Install (Chrome / Edge):</strong>
-        Look for the install icon in the address bar → click → Install → icon appears on desktop<br><br>
-        <strong style="color:var(--t);display:block;margin-bottom:8px">📱 iPhone Install (Safari):</strong>
-        Tap the share icon → Add to Home Screen → Add<br><br>
-        <strong style="color:var(--t);display:block;margin-bottom:8px">📱 Android Install (Chrome):</strong>
-        Tap the menu (⋮) → Add to Home Screen
+        <strong style="color:var(--t);display:block;margin-bottom:8px">💻 電腦安裝（Chrome / Edge）：</strong>
+        網址列右側有「安裝」圖示 → 點擊 → 「安裝」→ 桌面出現圖示<br><br>
+        <strong style="color:var(--t);display:block;margin-bottom:8px">📱 手機安裝（iOS Safari）：</strong>
+        點下方分享圖示 → 「加入主畫面」→ 「新增」<br><br>
+        <strong style="color:var(--t);display:block;margin-bottom:8px">📱 手機安裝（Android Chrome）：</strong>
+        點右上角選單 → 「新增至主畫面」
       </div>
-      <button class="btn-connect" id="btn-pwa-install" style="display:none" onclick="installPWA()">📲 Install on this device</button>
+      <button class="btn-connect" id="btn-pwa-install" style="display:none" onclick="installPWA()">📲 立即安裝到裝置</button>
       <div id="pwa-status" style="font-size:12px;color:var(--t3);margin-top:8px"></div>
     </div>
   </div>
 
   <div class="tw">
-    <div class="tb-top"><span class="tb-title">🔄 Sync Status</span></div>
+    <div class="tb-top"><span class="tb-title">🔄 同步狀態</span></div>
     <div style="padding:16px">
-      <div id="sync-status-detail" style="font-size:13px;color:var(--t2);line-height:1.8">Not connected</div>
+      <div id="sync-status-detail" style="font-size:13px;color:var(--t2);line-height:1.8">尚未連接</div>
       <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn-connect" onclick="syncAll()">🔄 Sync All Now</button>
-        <button class="bc" onclick="clearCache()" style="padding:7px 14px;font-size:13px">🗑️ Clear Cache</button>
+        <button class="btn-connect" onclick="syncAll()">🔄 立即同步全部</button>
+        <button class="bc" onclick="clearCache()" style="padding:7px 14px;font-size:13px">🗑️ 清除快取</button>
       </div>
     </div>
   </div>
@@ -590,188 +587,189 @@ tr:hover td{background:rgba(91,142,245,.04);}
 
 </div><!-- /body -->
 
+
 <!-- ════ MODALS ════ -->
 <!-- WEDDING -->
 <div class="mo" id="m-wed"><div class="mbox">
-  <div class="mt" id="m-wed-t">Add Wedding Expense</div><input type="hidden" id="wed-eid">
+  <div class="mt" id="m-wed-t">新增婚禮花費</div><input type="hidden" id="wed-eid">
   <div class="fr">
-    <div class="fg"><label class="fl">Category</label><input class="fi" id="wed-cat" placeholder="e.g. Banquet, Wedding Dress"></div>
-    <div class="fg"><label class="fl">Item / Brand</label><input class="fi" id="wed-item" placeholder="e.g. Ambassador Hotel 21 tables"></div>
+    <div class="fg"><label class="fl">類別</label><input class="fi" id="wed-cat" placeholder="例：喜宴、婚紗"></div>
+    <div class="fg"><label class="fl">細項/品牌</label><input class="fi" id="wed-item" placeholder="例：國賓飯店 21桌"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">Total (NT$)</label><input class="fi" type="number" id="wed-total-i" placeholder="0"></div>
-    <div class="fg"><label class="fl">Ya Paid</label><input class="fi" type="number" id="wed-ya-i" placeholder="0"></div>
+    <div class="fg"><label class="fl">總價 (NT$)</label><input class="fi" type="number" id="wed-total-i" placeholder="0"></div>
+    <div class="fg"><label class="fl">亞已付</label><input class="fi" type="number" id="wed-ya-i" placeholder="0"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">Wang Paid</label><input class="fi" type="number" id="wed-wang-i" placeholder="0"></div>
-    <div class="fg"><label class="fl">Note</label><input class="fi" id="wed-note" placeholder="Date / notes"></div>
+    <div class="fg"><label class="fl">王已付</label><input class="fi" type="number" id="wed-wang-i" placeholder="0"></div>
+    <div class="fg"><label class="fl">備註</label><input class="fi" id="wed-note" placeholder="日期/說明"></div>
   </div>
-  <div class="ma"><button class="bc" onclick="closeM('m-wed')">Cancel</button><button class="bs" onclick="saveWed()">Save</button></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-wed')">取消</button><button class="bs" onclick="saveWed()">儲存</button></div>
 </div></div>
 
 <!-- INS LUKE -->
 <div class="mo" id="m-insl"><div class="mbox">
-  <div class="mt" id="m-insl-t">Add Luke Policy</div><input type="hidden" id="insl-eid">
+  <div class="mt" id="m-insl-t">新增 Luke 保單</div><input type="hidden" id="insl-eid">
   <div class="fr">
-    <div class="fg"><label class="fl">Type</label><select class="fs" id="insl-type"><option>Life</option><option>Accident</option><option>Accident (Actual)</option><option>Accident (Daily)</option><option>Medical (Actual)</option><option>Cancer</option><option>Disability Aid</option><option>Disability</option><option>Burns</option></select></div>
-    <div class="fg"><label class="fl">Insurer</label><input class="fi" id="insl-co" placeholder="e.g. Farglory, AIA"></div>
+    <div class="fg"><label class="fl">種類</label><select class="fs" id="insl-type"><option>壽險</option><option>意外</option><option>意外實支</option><option>意外日額</option><option>實支實付</option><option>癌症</option><option>殘扶</option><option>殘廢</option><option>燒燙傷</option></select></div>
+    <div class="fg"><label class="fl">保險公司</label><input class="fi" id="insl-co" placeholder="例：遠雄、友邦"></div>
   </div>
-  <div class="fg"><label class="fl">Policy Name</label><input class="fi" id="insl-name" placeholder="e.g. Farglory Whole Life"></div>
+  <div class="fg"><label class="fl">保險名稱</label><input class="fi" id="insl-name" placeholder="例：雄安心終身保險"></div>
   <div class="fr">
-    <div class="fg"><label class="fl">Code / Coverage</label><input class="fi" id="insl-code" placeholder="e.g. FX7 NT$100K"></div>
-    <div class="fg"><label class="fl">Payment Term (yrs)</label><input class="fi" type="number" id="insl-yrs" placeholder="20"></div>
+    <div class="fg"><label class="fl">代號/保額</label><input class="fi" id="insl-code" placeholder="例：FX7 10萬"></div>
+    <div class="fg"><label class="fl">繳費年期</label><input class="fi" type="number" id="insl-yrs" placeholder="20"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">Covered Until Age</label><input class="fi" id="insl-age" placeholder="e.g. 75, Lifetime"></div>
-    <div class="fg"><label class="fl">Annual Premium</label><input class="fi" type="number" id="insl-prem" placeholder="0"></div>
+    <div class="fg"><label class="fl">保障至年齡</label><input class="fi" id="insl-age" placeholder="例：75、終身"></div>
+    <div class="fg"><label class="fl">年繳保費</label><input class="fi" type="number" id="insl-prem" placeholder="0"></div>
   </div>
-  <div class="fg"><label class="fl">Policy Period</label><input class="fi" id="insl-period" placeholder="e.g. 2017.05.08-2037.05.08"></div>
-  <div class="ma"><button class="bc" onclick="closeM('m-insl')">Cancel</button><button class="bs" onclick="saveInsL()">Save</button></div>
+  <div class="fg"><label class="fl">合約期間</label><input class="fi" id="insl-period" placeholder="e.g. 2017.05.08-2037.05.08"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-insl')">取消</button><button class="bs" onclick="saveInsL()">儲存</button></div>
 </div></div>
 
 <!-- CLAIM -->
 <div class="mo" id="m-claim"><div class="mbox">
-  <div class="mt" id="m-claim-t">Add Claim</div><input type="hidden" id="claim-eid">
+  <div class="mt" id="m-claim-t">新增理賠紀錄</div><input type="hidden" id="claim-eid">
   <div class="fr">
-    <div class="fg"><label class="fl">Date</label><input class="fi" type="date" id="claim-date"></div>
-    <div class="fg"><label class="fl">Insurer</label><input class="fi" id="claim-co" placeholder="例：遠雄、全球"></div>
+    <div class="fg"><label class="fl">日期</label><input class="fi" type="date" id="claim-date"></div>
+    <div class="fg"><label class="fl">保險公司</label><input class="fi" id="claim-co" placeholder="例：遠雄、全球"></div>
   </div>
-  <div class="fg"><label class="fl">Reason</label><input class="fi" id="claim-reason" placeholder="e.g. Hospitalized, enterovirus"></div>
-  <div class="fg"><label class="fl">Claim Amount (NT$)</label><input class="fi" type="number" id="claim-amt" placeholder="0"></div>
-  <div class="fg"><label class="fl">Note</label><input class="fi" id="claim-note" placeholder="Optional"></div>
-  <div class="ma"><button class="bc" onclick="closeM('m-claim')">Cancel</button><button class="bs" onclick="saveClaim()">Save</button></div>
+  <div class="fg"><label class="fl">事由</label><input class="fi" id="claim-reason" placeholder="例：腸病毒住院"></div>
+  <div class="fg"><label class="fl">理賠金額 (NT$)</label><input class="fi" type="number" id="claim-amt" placeholder="0"></div>
+  <div class="fg"><label class="fl">備註</label><input class="fi" id="claim-note" placeholder="選填"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-claim')">取消</button><button class="bs" onclick="saveClaim()">儲存</button></div>
 </div></div>
 
 <!-- INS JAMIE -->
 <div class="mo" id="m-insj"><div class="mbox">
-  <div class="mt" id="m-insj-t">Add Jamie Policy</div><input type="hidden" id="insj-eid">
+  <div class="mt" id="m-insj-t">新增 Jamie 保單</div><input type="hidden" id="insj-eid">
   <div class="fr">
-    <div class="fg"><label class="fl">Type</label><select class="fs" id="insj-type"><option>General</option><option>Medical</option><option>Hosp./Surgery</option><option>Outpatient</option><option>Surgery</option><option>Critical Illness</option><option>Cancer</option></select></div>
-    <div class="fg"><label class="fl">Company</label><input class="fi" id="insj-co" placeholder="e.g. Mercuries, Shin Kong"></div>
+    <div class="fg"><label class="fl">種類</label><select class="fs" id="insj-type"><option>一般</option><option>醫療</option><option>住院/手術/醫療</option><option>門診/出院</option><option>手術</option><option>重大疾病</option><option>癌症</option></select></div>
+    <div class="fg"><label class="fl">公司</label><input class="fi" id="insj-co" placeholder="例：三商美邦、新光人壽"></div>
   </div>
-  <div class="fg"><label class="fl">Policy Name</label><input class="fi" id="insj-name" placeholder="Policy name"></div>
+  <div class="fg"><label class="fl">保險名稱</label><input class="fi" id="insj-name" placeholder="保險名稱"></div>
   <div class="fr">
     <div class="fg"><label class="fl">保額</label><input class="fi" type="number" id="insj-amt" placeholder="0"></div>
-    <div class="fg"><label class="fl">Policy No.</label><input class="fi" id="insj-pid" placeholder="Optional"></div>
+    <div class="fg"><label class="fl">保單號碼</label><input class="fi" id="insj-pid" placeholder="選填"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">Start Date</label><input class="fi" id="insj-start" placeholder="例：88/12/20"></div>
-    <div class="fg"><label class="fl">End Date</label><input class="fi" id="insj-end" placeholder="例：185/12/31"></div>
+    <div class="fg"><label class="fl">生效日期</label><input class="fi" id="insj-start" placeholder="例：88/12/20"></div>
+    <div class="fg"><label class="fl">到期日期</label><input class="fi" id="insj-end" placeholder="例：185/12/31"></div>
   </div>
-  <div class="fg"><label class="fl">Benefits</label><input class="fi" id="insj-cover" placeholder="例：身故、完全失能、住院手術"></div>
-  <div class="ma"><button class="bc" onclick="closeM('m-insj')">Cancel</button><button class="bs" onclick="saveInsJ()">Save</button></div>
+  <div class="fg"><label class="fl">保障項目</label><input class="fi" id="insj-cover" placeholder="例：身故、完全失能、住院手術"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-insj')">取消</button><button class="bs" onclick="saveInsJ()">儲存</button></div>
 </div></div>
 
 <!-- CHILD -->
 <div class="mo" id="m-child"><div class="mbox">
-  <div class="mt" id="m-child-t">Add Childcare Plan</div><input type="hidden" id="child-eid">
+  <div class="mt" id="m-child-t">新增育兒費方案</div><input type="hidden" id="child-eid">
   <div class="fr">
-    <div class="fg"><label class="fl">Stage</label><select class="fs" id="child-stage"><option>Elementary</option><option>Junior High</option><option>High School</option><option>University</option><option>Graduate</option></select></div>
-    <div class="fg"><label class="fl">School / Plan</label><input class="fi" id="child-school" placeholder="e.g. Longhua, YMCA"></div>
+    <div class="fg"><label class="fl">學齡階段</label><select class="fs" id="child-stage"><option>國小</option><option>國中</option><option>高中</option><option>大學</option><option>研究所</option></select></div>
+    <div class="fg"><label class="fl">學校/方案</label><input class="fi" id="child-school" placeholder="例：龍華、YMCA"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">Food / Month</label><input class="fi" type="number" id="child-food" placeholder="6000"></div>
-    <div class="fg"><label class="fl">Living / Month</label><input class="fi" type="number" id="child-life" placeholder="1800"></div>
+    <div class="fg"><label class="fl">食/月</label><input class="fi" type="number" id="child-food" placeholder="6000"></div>
+    <div class="fg"><label class="fl">衣住行/月</label><input class="fi" type="number" id="child-life" placeholder="1800"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">Tuition / Month</label><input class="fi" type="number" id="child-art" placeholder="0"></div>
-    <div class="fg"><label class="fl">School Fee / Month</label><input class="fi" type="number" id="child-fee" placeholder="0"></div>
+    <div class="fg"><label class="fl">才藝補習/月</label><input class="fi" type="number" id="child-art" placeholder="0"></div>
+    <div class="fg"><label class="fl">學費/月</label><input class="fi" type="number" id="child-fee" placeholder="0"></div>
   </div>
-  <div class="fg"><label class="fl">Note</label><input class="fi" id="child-note" placeholder="Course description"></div>
-  <div class="ma"><button class="bc" onclick="closeM('m-child')">Cancel</button><button class="bs" onclick="saveChild()">Save</button></div>
+  <div class="fg"><label class="fl">備註</label><input class="fi" id="child-note" placeholder="課程說明"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-child')">取消</button><button class="bs" onclick="saveChild()">儲存</button></div>
 </div></div>
 
 <!-- MONTHLY -->
 <div class="mo" id="m-mo"><div class="mbox">
-  <div class="mt" id="m-mo-t">Add Monthly Item</div><input type="hidden" id="mo-eid">
+  <div class="mt" id="m-mo-t">新增月支出項目</div><input type="hidden" id="mo-eid">
   <div class="fr">
-    <div class="fg"><label class="fl">Category</label><select class="fs" id="mo-cat"><option>Food</option><option>Transport</option><option>Housing</option><option>Insurance/Savings</option><option>Parents Allowance</option><option>Mortgage</option><option>Entertainment</option><option>Travel</option><option>Retirement Fund</option><option>Childcare</option><option>Tax / Misc.</option></select></div>
-    <div class="fg"><label class="fl">Description</label><input class="fi" id="mo-item" placeholder="e.g. Car fuel"></div>
+    <div class="fg"><label class="fl">類別</label><select class="fs" id="mo-cat"><option>食</option><option>行</option><option>住</option><option>保險|儲蓄</option><option>孝親費</option><option>房貸</option><option>娛樂</option><option>旅遊</option><option>養老金</option><option>育兒</option><option>稅費/雜費</option></select></div>
+    <div class="fg"><label class="fl">項目說明</label><input class="fi" id="mo-item" placeholder="例：汽車油錢"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">Wang / Month</label><input class="fi" type="number" id="mo-wang-i" placeholder="0"></div>
-    <div class="fg"><label class="fl">Ya / Month</label><input class="fi" type="number" id="mo-ya-i" placeholder="0"></div>
+    <div class="fg"><label class="fl">王/月</label><input class="fi" type="number" id="mo-wang-i" placeholder="0"></div>
+    <div class="fg"><label class="fl">亞/月</label><input class="fi" type="number" id="mo-ya-i" placeholder="0"></div>
   </div>
-  <div class="fg"><label class="fl">Note</label><input class="fi" id="mo-note" placeholder="Calculation notes"></div>
-  <div class="ma"><button class="bc" onclick="closeM('m-mo')">Cancel</button><button class="bs" onclick="saveMo()">Save</button></div>
+  <div class="fg"><label class="fl">備註</label><input class="fi" id="mo-note" placeholder="計算說明"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-mo')">取消</button><button class="bs" onclick="saveMo()">儲存</button></div>
 </div></div>
 
 <!-- WEALTH -->
 <div class="mo" id="m-wl"><div class="mbox">
-  <div class="mt" id="m-wl-t">Add Asset</div><input type="hidden" id="wl-eid">
+  <div class="mt" id="m-wl-t">＋ 新增資產</div><input type="hidden" id="wl-eid">
   <div class="fr">
-    <div class="fg"><label class="fl">Type</label><select class="fs" id="wl-type"><option>Savings</option><option>Fixed Deposit</option><option>Foreign Currency</option><option>Investment</option><option>Insurance</option><option>Labor Pension</option><option>Other</option></select></div>
-    <div class="fg"><label class="fl">Owner</label><select class="fs" id="wl-owner"><option>JC (亞)</option><option>CW (王)</option><option>共同</option></select></div>
+    <div class="fg"><label class="fl">種類</label><select class="fs" id="wl-type"><option>活存</option><option>定存</option><option>外幣</option><option>投資</option><option>保險</option><option>勞退</option><option>其他</option></select></div>
+    <div class="fg"><label class="fl">持有人</label><select class="fs" id="wl-owner"><option>JC (亞)</option><option>CW (王)</option><option>共同</option></select></div>
   </div>
-  <div class="fg"><label class="fl">Bank / Account Name</label><input class="fi" id="wl-bank" placeholder="e.g. Mega Bank digital"></div>
+  <div class="fg"><label class="fl">銀行/帳戶名稱</label><input class="fi" id="wl-bank" placeholder="例：兆豐 03943數位"></div>
   <div class="fr">
-    <div class="fg"><label class="fl">TWD Amount</label><input class="fi" type="number" id="wl-ntd" placeholder="0"></div>
-    <div class="fg"><label class="fl">Foreign Currency</label><input class="fi" id="wl-fgn" placeholder="e.g. 1536 USD"></div>
+    <div class="fg"><label class="fl">台幣金額</label><input class="fi" type="number" id="wl-ntd" placeholder="0"></div>
+    <div class="fg"><label class="fl">外幣金額</label><input class="fi" id="wl-fgn" placeholder="e.g. 1536 USD"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">Deposit Term</label><input class="fi" id="wl-period" placeholder="e.g. 6 months"></div>
-    <div class="fg"><label class="fl">Interest Rate</label><input class="fi" id="wl-rate" placeholder="e.g. 1.445%"></div>
+    <div class="fg"><label class="fl">定存期間</label><input class="fi" id="wl-period" placeholder="e.g. 6 months"></div>
+    <div class="fg"><label class="fl">利率</label><input class="fi" id="wl-rate" placeholder="e.g. 1.445%"></div>
   </div>
-  <div class="fg"><label class="fl">Note</label><input class="fi" id="wl-note" placeholder="Expiry date, notes"></div>
-  <div class="ma"><button class="bc" onclick="closeM('m-wl')">Cancel</button><button class="bs" onclick="saveWl()">Save</button></div>
+  <div class="fg"><label class="fl">備註</label><input class="fi" id="wl-note" placeholder="到期日、說明"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-wl')">取消</button><button class="bs" onclick="saveWl()">儲存</button></div>
 </div></div>
 
 <!-- WEALTH SNAPSHOT -->
 <div class="mo" id="m-wl-snap"><div class="mbox">
-  <div class="mt">📸 Asset Snapshot</div>
-  <p style="font-size:12.5px;color:var(--t2);margin-bottom:16px;line-height:1.6">A snapshot captures JC/CW totals at a point in time and plots them on the chart to track asset growth.</p>
+  <div class="mt">📸 記錄財產快照</div>
+  <p style="font-size:12.5px;color:var(--t2);margin-bottom:16px;line-height:1.6">快照會自動計算目前 JC/CW 的資產合計，並記錄到圖表中，方便追蹤財產增減趨勢。</p>
   <div class="fr">
-    <div class="fg"><label class="fl">Date</label><input class="fi" type="date" id="snap-date"></div>
-    <div class="fg"><label class="fl">Label</label><input class="fi" id="snap-label" placeholder="e.g. 2024Q1, Mid-year review"></div>
+    <div class="fg"><label class="fl">日期</label><input class="fi" type="date" id="snap-date"></div>
+    <div class="fg"><label class="fl">標籤</label><input class="fi" id="snap-label" placeholder="例：2024Q1、年中盤點"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">JC (Ya) TWD Total</label><input class="fi" type="number" id="snap-jc" placeholder="Auto-calculated, editable"></div>
-    <div class="fg"><label class="fl">CW (Wang) TWD Total</label><input class="fi" type="number" id="snap-cw" placeholder="Auto-calculated, editable"></div>
+    <div class="fg"><label class="fl">JC (亞) 台幣合計</label><input class="fi" type="number" id="snap-jc" placeholder="自動計算，可手動覆蓋"></div>
+    <div class="fg"><label class="fl">CW (王) 台幣合計</label><input class="fi" type="number" id="snap-cw" placeholder="自動計算，可手動覆蓋"></div>
   </div>
-  <div class="fg"><label class="fl">Note</label><input class="fi" id="snap-note" placeholder="Notes on major changes this period"></div>
-  <div class="ma"><button class="bc" onclick="closeM('m-wl-snap')">Cancel</button><button class="bs" onclick="saveSnap()">Save Snapshot</button></div>
+  <div class="fg"><label class="fl">備註</label><input class="fi" id="snap-note" placeholder="本次重大異動說明"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-wl-snap')">取消</button><button class="bs" onclick="saveSnap()">儲存快照</button></div>
 </div></div>
 
 <!-- ANA1 -->
 <div class="mo" id="m-ana1"><div class="mbox">
   <div class="mt">新增儲蓄/投資</div><input type="hidden" id="ana1-eid">
   <div class="fr">
-    <div class="fg"><label class="fl">Category</label><select class="fs" id="ana1-cat"><option>Savings</option><option>Investment / Insurance</option></select></div>
-    <div class="fg"><label class="fl">Item</label><input class="fi" id="ana1-item" placeholder="e.g. Ya_Savings"></div>
+    <div class="fg"><label class="fl">類別</label><select class="fs" id="ana1-cat"><option>活存</option><option>投資保險</option></select></div>
+    <div class="fg"><label class="fl">項目</label><input class="fi" id="ana1-item" placeholder="例：亞_儲蓄"></div>
   </div>
-  <div class="fg"><label class="fl">Amount</label><input class="fi" type="number" id="ana1-amt" placeholder="0"></div>
-  <div class="ma"><button class="bc" onclick="closeM('m-ana1')">Cancel</button><button class="bs" onclick="saveAna1()">Save</button></div>
+  <div class="fg"><label class="fl">金額</label><input class="fi" type="number" id="ana1-amt" placeholder="0"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-ana1')">取消</button><button class="bs" onclick="saveAna1()">儲存</button></div>
 </div></div>
 
 <!-- ANA2 -->
 <div class="mo" id="m-ana2"><div class="mbox">
   <div class="mt">新增備用金/支出規劃</div><input type="hidden" id="ana2-eid">
   <div class="fr">
-    <div class="fg"><label class="fl">Category</label><select class="fs" id="ana2-cat"><option>Reserve Fund</option><option>Planned Expenses</option></select></div>
-    <div class="fg"><label class="fl">Item</label><input class="fi" id="ana2-item" placeholder="e.g. Emergency_1yr_WangYa"></div>
+    <div class="fg"><label class="fl">類別</label><select class="fs" id="ana2-cat"><option>備用金</option><option>預計支出</option></select></div>
+    <div class="fg"><label class="fl">項目</label><input class="fi" id="ana2-item" placeholder="例：急_1年_王亞"></div>
   </div>
-  <div class="fg"><label class="fl">Amount</label><input class="fi" type="number" id="ana2-amt" placeholder="0"></div>
-  <div class="fg"><label class="fl">Note</label><input class="fi" id="ana2-note" placeholder="Calculation notes"></div>
-  <div class="ma"><button class="bc" onclick="closeM('m-ana2')">Cancel</button><button class="bs" onclick="saveAna2()">Save</button></div>
+  <div class="fg"><label class="fl">金額</label><input class="fi" type="number" id="ana2-amt" placeholder="0"></div>
+  <div class="fg"><label class="fl">備註</label><input class="fi" id="ana2-note" placeholder="計算說明"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-ana2')">取消</button><button class="bs" onclick="saveAna2()">儲存</button></div>
 </div></div>
 
 <!-- STOCK -->
 <div class="mo" id="m-stk"><div class="mbox">
-  <div class="mt" id="m-stk-t">Add Stock Position</div><input type="hidden" id="stk-eid">
+  <div class="mt" id="m-stk-t">新增股票持倉</div><input type="hidden" id="stk-eid">
   <div class="fr">
-    <div class="fg"><label class="fl">Company Name</label><input class="fi" id="stk-name" placeholder="e.g. Innolux"></div>
-    <div class="fg"><label class="fl">Ticker</label><input class="fi" id="stk-code" placeholder="e.g. 3481"></div>
+    <div class="fg"><label class="fl">公司名稱</label><input class="fi" id="stk-name" placeholder="例：群創"></div>
+    <div class="fg"><label class="fl">股票代號</label><input class="fi" id="stk-code" placeholder="例：3481"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">Avg. Buy Price</label><input class="fi" type="number" id="stk-buy" step="0.01" placeholder="0.00" oninput="prevPnl()"></div>
-    <div class="fg"><label class="fl">Shares</label><input class="fi" type="number" id="stk-shares" placeholder="1000" oninput="prevPnl()"></div>
+    <div class="fg"><label class="fl">買進均價</label><input class="fi" type="number" id="stk-buy" step="0.01" placeholder="0.00" oninput="prevPnl()"></div>
+    <div class="fg"><label class="fl">股數</label><input class="fi" type="number" id="stk-shares" placeholder="1000" oninput="prevPnl()"></div>
   </div>
   <div class="fr">
-    <div class="fg"><label class="fl">Current Price</label><input class="fi" type="number" id="stk-price" step="0.01" placeholder="0.00" oninput="prevPnl()"></div>
-    <div class="fg"><label class="fl">P&L Preview</label><input class="fi" id="stk-prev" readonly style="color:var(--t3)"></div>
+    <div class="fg"><label class="fl">現價</label><input class="fi" type="number" id="stk-price" step="0.01" placeholder="0.00" oninput="prevPnl()"></div>
+    <div class="fg"><label class="fl">損益預覽</label><input class="fi" id="stk-prev" readonly style="color:var(--t3)"></div>
   </div>
-  <div class="fg"><label class="fl">Note</label><input class="fi" id="stk-note" placeholder="Optional"></div>
-  <div class="ma"><button class="bc" onclick="closeM('m-stk')">Cancel</button><button class="bs" onclick="saveStk()">Save</button></div>
+  <div class="fg"><label class="fl">備註</label><input class="fi" id="stk-note" placeholder="選填"></div>
+  <div class="ma"><button class="bc" onclick="closeM('m-stk')">取消</button><button class="bs" onclick="saveStk()">儲存</button></div>
 </div></div>
 
 <div class="toast" id="toast">✓ 已儲存</div>
@@ -822,7 +820,7 @@ function openM(id){$(id).classList.add('on');const df=$(id)?.querySelector('inpu
 function closeM(id){$(id).classList.remove('on');}
 document.querySelectorAll('.mo').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('on');}));
 function saveR(key,id,r){const d=DB.g(key);if(id){const i=d.findIndex(x=>x.id===id);i>=0?d[i]=r:d.push(r);}else d.push(r);DB.s(key,d);}
-function delR(key,id,cb){if(!confirm('Delete this entry?'))return;DB.s(key,DB.g(key).filter(x=>x.id!==id));cb();toast('✓ Deleted');}
+function delR(key,id,cb){if(!confirm('確定刪除？'))return;DB.s(key,DB.g(key).filter(x=>x.id!==id));cb();toast('✓ 已刪除');}
 
 /* ══════ GOOGLE SHEETS API ══════ */
 let SHEET_ID = DB.gv('sheet_id','');
@@ -871,9 +869,9 @@ async function connectSheet(){
     await fetchSheet(sheetName);
     DB.sv('sheet_id', sid);
     syncState.connected = true;
-    $('connect-status').textContent='✅ Connected! Syncing all data...';
+    $('connect-status').textContent='✅ 已連接! Syncing all data...';
     $('connect-status').style.color='var(--a3)';
-    toast('✅ Connected!');
+    toast('✅ 連接成功！');
     renderSheetMap();
     await syncAll();
   } catch(err){
@@ -885,7 +883,7 @@ async function connectSheet(){
 
 async function syncAll(){
   if(!SHEET_ID){toast('Please connect Google Sheets in Settings', true);go('settings');return;}
-  setSyncUI(true,'Syncing...');
+  setSyncUI(true,'同步中...');
   let errors=[];
   const tasks=[
     {key:'s_wedding', tab:SHEET_MAP.wedding||'婚禮紀錄', parse:parseWedding},
@@ -908,9 +906,9 @@ async function syncAll(){
   }
   const now = new Date().toLocaleString('zh-TW');
   DB.sv('last_sync', now); syncState.lastSync = now; syncState.connected = errors.length===0;
-  setSyncUI(false, errors.length ? `部分同步失敗 (${errors.length} 個分頁)` : 'Sync complete ✓');
-  if(errors.length) toast('⚠️ Some tabs failed to sync', true);
-  else toast('🔄 Sync complete!');
+  setSyncUI(false, errors.length ? `部分同步失敗 (${errors.length} 個分頁)` : '同步完成 ✓');
+  if(errors.length) toast('⚠️ 部分分頁同步失敗', true);
+  else toast('🔄 同步完成！');
   // re-render current page
   const cur = document.querySelector('.tab.on')?.dataset?.p;
   if(cur && cur!=='home' && cur!=='settings') render(cur);
@@ -923,16 +921,16 @@ function setSyncUI(loading, text){
   const time=$('home-sync-time');
   bar.style.display='flex';
   if(loading){dot.className='sync-dot spin';txt.textContent=text;time.textContent='';}
-  else{dot.className='sync-dot '+(syncState.connected?'ok':'err');txt.textContent=text;time.textContent=syncState.lastSync?'Last: '+syncState.lastSync:'';}
+  else{dot.className='sync-dot '+(syncState.connected?'ok':'err');txt.textContent=text;time.textContent=syncState.lastSync?'上次：'+syncState.lastSync:'';}
 }
 function updateSyncDetail(errors=[]){
   const el=$('sync-status-detail');
   if(!el)return;
   el.innerHTML=`
-    <strong>Spreadsheet ID: </strong> <code style="font-family:var(--mono);font-size:11px;color:var(--a6)">${SHEET_ID||'未設定'}</code><br>
-    <strong>Last sync: </strong> ${syncState.lastSync||'Never'}<br>
-    <strong>Status: </strong> <span style="color:${syncState.connected?'var(--a3)':'var(--a4)'}">${syncState.connected?'✅ Connected':'❌ Not connected or errors'}</span>
-    ${errors.length?'<br><strong style="color:var(--a4)">Failed tabs: </strong><br>'+errors.map(e=>`<span style="font-size:11px;color:var(--a4)">• ${e}</span>`).join('<br>'):''}
+    <strong>Spreadsheet ID：</strong> <code style="font-family:var(--mono);font-size:11px;color:var(--a6)">${SHEET_ID||'未設定'}</code><br>
+    <strong>上次同步：</strong> ${syncState.lastSync||'從未'}<br>
+    <strong>狀態：</strong> <span style="color:${syncState.connected?'var(--a3)':'var(--a4)'}">${syncState.connected?'✅ 已連接':'❌ 未連接或有錯誤'}</span>
+    ${errors.length?'<br><strong style="color:var(--a4)">失敗分頁：</strong><br>'+errors.map(e=>`<span style="font-size:11px;color:var(--a4)">• ${e}</span>`).join('<br>'):''}
   `;
 }
 
@@ -1041,7 +1039,7 @@ function renderSheetMap(){
   const labels={wedding:'婚禮紀錄',ins_luke:'保險Luke',ins_jamie:'保險Jamie',child_est:'育兒費預估',monthly:'每月花費預估',wealth:'財產統計',wealth_ana:'財產分析',stock:'股票'};
   body.innerHTML=Object.entries(DEFAULT_SHEET_MAP).map(([key,def])=>{
     const cached=DB.g('s_'+key);
-    const status=cached.length?`<span style="color:var(--a3)">✅ ${cached.length} 筆</span>`:'<span style="color:var(--t3)">Not synced</span>';
+    const status=cached.length?`<span style="color:var(--a3)">✅ ${cached.length} 筆</span>`:'<span style="color:var(--t3)">未同步</span>';
     return`<tr><td>${labels[key]||key}</td><td><input class="si" style="width:100%;max-width:200px" id="smap-${key}" value="${SHEET_MAP[key]||def}" placeholder="${def}"></td><td>${status}</td></tr>`;
   }).join('');
 }
@@ -1082,8 +1080,8 @@ function rHome(){
   const rvT=ana.filter(r=>r.cat==='備用金'||r.cat==='預計支出').reduce((s,r)=>s+(+r.amt||0),0);
   const real=svT-rvT;
   const hasSheet=!!SHEET_ID;
-  $('home-sub').textContent=hasSheet?`Google Sheets connected — ${syncState.lastSync?'Synced: '+syncState.lastSync:'尚Not synced'}`:'Go to Settings to connect Google Sheets';
-  if(SHEET_ID) setSyncUI(false, syncState.connected?'Synced':'Not synced');
+  $('home-sub').textContent=hasSheet?`已連接 Google Sheets — ${syncState.lastSync?'已同步: '+syncState.lastSync:'尚未同步'}`:'請到設定頁連接 Google Sheets';
+  if(SHEET_ID) setSyncUI(false, syncState.connected?'已同步':'未同步');
   $('h-wed').textContent=fmt(wed||localWed);
   $('h-insl').textContent=il+' 張';
   $('h-wealth').textContent=fmt(wl);
@@ -1120,8 +1118,8 @@ function rWed(){
     <td>${badge(r.cat,wedClr[r.cat]||'b1')}</td><td>${r.item||'—'}</td>
     <td class="tn c2">${fmt(r.total)}</td><td class="tn c5">${r.ya?fmt(r.ya):'—'}</td>
     <td class="tn c1">${r.wang?fmt(r.wang):'—'}</td><td class="tnt">${r.note||''}</td>
-    <td><button class="ab" onclick="editWed('${r.id}')">Edit</button><button class="ab del" onclick="delWed('${r.id}')">Delete</button></td>
-  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">No data yet — 請同步 Google Sheets 或手動新增</td></tr>';
+    <td><button class="ab" onclick="editWed('${r.id}')">編輯</button><button class="ab del" onclick="delWed('${r.id}')">刪除</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">尚無資料 — 請同步 Google Sheets 或手動新增</td></tr>';
 }
 function setWedF(c,el){document.querySelectorAll('#wed-pills .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');wedF=c;rWed();}
 function saveWed(){
@@ -1135,7 +1133,7 @@ function editWed(id){
   sv('wed-eid',r.id);sv('wed-cat',r.cat);sv('wed-item',r.item);sv('wed-total-i',r.total||0);sv('wed-ya-i',r.ya||0);sv('wed-wang-i',r.wang||0);sv('wed-note',r.note||'');
   $('m-wed-t').textContent='編輯婚禮花費';openM('m-wed');
 }
-function delWed(id){if(!confirm('Delete this entry?'))return;DB.s('wedding',DB.g('wedding').filter(x=>x.id!==id));DB.s('s_wedding',getData('s_wedding','wedding').filter(x=>x.id!==id));rWed();toast('✓ Deleted');}
+function delWed(id){if(!confirm('確定刪除？'))return;DB.s('wedding',DB.g('wedding').filter(x=>x.id!==id));DB.s('s_wedding',getData('s_wedding','wedding').filter(x=>x.id!==id));rWed();toast('✓ 已刪除');}
 
 // INS LUKE
 let inslF='all';
@@ -1156,19 +1154,19 @@ function rInsL(){
     <td>${badge(r.type,inslClr[r.type]||'b1')}</td><td>${badge(r.co,coClr[r.co]||'b7')}</td>
     <td>${r.name||'—'}</td><td>${r.code||'—'}</td><td>${r.yrs||'—'} 年</td><td>${r.age||'—'}</td>
     <td class="tn c2">${r.prem?fmt(r.prem):'—'}</td><td class="tnt">${r.period||'—'}</td>
-    <td><button class="ab" onclick="editInsL('${r.id}')">Edit</button><button class="ab del" onclick="delInsL('${r.id}')">Delete</button></td>
-  </tr>`).join(''):'<tr class="loading-row"><td colspan="9">No data yet</td></tr>';
+    <td><button class="ab" onclick="editInsL('${r.id}')">編輯</button><button class="ab del" onclick="delInsL('${r.id}')">刪除</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="9">尚無資料</td></tr>';
   const cl=getData('s_claims','claims');
   $('claim-body').innerHTML=cl.length?cl.map(r=>`<tr>
     <td>${r.date||'—'}</td><td>${r.reason||'—'}</td><td>${r.co||'—'}</td>
     <td class="tn c3">${fmt(r.amt)}</td><td class="tnt">${r.note||''}</td>
-    <td><button class="ab" onclick="editClaim('${r.id}')">Edit</button><button class="ab del" onclick="delR('claims','${r.id}',rInsL)">Delete</button></td>
-  </tr>`).join(''):'<tr class="loading-row"><td colspan="6">No claims yet</td></tr>';
+    <td><button class="ab" onclick="editClaim('${r.id}')">編輯</button><button class="ab del" onclick="delR('claims','${r.id}',rInsL)">刪除</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="6">無理賠紀錄</td></tr>';
 }
 function setInslF(t,el){document.querySelectorAll('#insl-pills .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');inslF=t;rInsL();}
 function saveInsL(){
   const id=v('insl-eid');const r={id:id||DB.id(),type:v('insl-type')||'壽險',co:v('insl-co'),name:v('insl-name'),code:v('insl-code'),yrs:v('insl-yrs'),age:v('insl-age'),prem:+(v('insl-prem')||0),period:v('insl-period')};
-  if(!r.name){alert('Please fill in policy name');return;}
+  if(!r.name){alert('請填保險名稱');return;}
   saveR('ins_luke',id,r);closeM('m-insl');clr(['insl-eid','insl-co','insl-name','insl-code','insl-yrs','insl-age','insl-prem','insl-period']);
   $('m-insl-t').textContent='新增 Luke 保單';rInsL();toast();
 }
@@ -1177,10 +1175,10 @@ function editInsL(id){
   sv('insl-eid',r.id);$('insl-type').value=r.type||'壽險';sv('insl-co',r.co);sv('insl-name',r.name);sv('insl-code',r.code||'');sv('insl-yrs',r.yrs||'');sv('insl-age',r.age||'');sv('insl-prem',r.prem||'');sv('insl-period',r.period||'');
   $('m-insl-t').textContent='編輯 Luke 保單';openM('m-insl');
 }
-function delInsL(id){if(!confirm('Delete this entry?'))return;DB.s('ins_luke',DB.g('ins_luke').filter(x=>x.id!==id));DB.s('s_ins_luke',getData('s_ins_luke','ins_luke').filter(x=>x.id!==id));rInsL();toast('✓ Deleted');}
+function delInsL(id){if(!confirm('確定刪除？'))return;DB.s('ins_luke',DB.g('ins_luke').filter(x=>x.id!==id));DB.s('s_ins_luke',getData('s_ins_luke','ins_luke').filter(x=>x.id!==id));rInsL();toast('✓ 已刪除');}
 function saveClaim(){
   const id=v('claim-eid');const r={id:id||DB.id(),date:v('claim-date'),reason:v('claim-reason'),co:v('claim-co'),amt:+(v('claim-amt')||0),note:v('claim-note')};
-  if(!r.reason){alert('Please fill in reason');return;}
+  if(!r.reason){alert('請填事由');return;}
   saveR('claims',id,r);closeM('m-claim');clr(['claim-eid','claim-reason','claim-co','claim-amt','claim-note']);rInsL();toast();
 }
 function editClaim(id){
@@ -1206,13 +1204,13 @@ function rInsJ(){
     <td>${badge(r.type,insjClr[r.type]||'b1')}</td><td>${badge(r.co,jCoClr[r.co]||'b7')}</td>
     <td>${r.name||'—'}</td><td class="tn">${r.amt?fmtN(r.amt):'—'}</td>
     <td>${r.start||'—'}</td><td>${r.end||'—'}</td><td class="tnt">${r.cover||''}</td>
-    <td><button class="ab" onclick="editInsJ('${r.id}')">Edit</button><button class="ab del" onclick="delInsJ('${r.id}')">Delete</button></td>
-  </tr>`).join(''):'<tr class="loading-row"><td colspan="8">No data yet</td></tr>';
+    <td><button class="ab" onclick="editInsJ('${r.id}')">編輯</button><button class="ab del" onclick="delInsJ('${r.id}')">刪除</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="8">尚無資料</td></tr>';
 }
 function setInsjF(t,el){document.querySelectorAll('#insj-pills .pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');insjF=t;rInsJ();}
 function saveInsJ(){
   const id=v('insj-eid');const r={id:id||DB.id(),type:v('insj-type')||'一般',co:v('insj-co'),name:v('insj-name'),amt:+(v('insj-amt')||0),start:v('insj-start'),end:v('insj-end'),pid:v('insj-pid'),cover:v('insj-cover')};
-  if(!r.name){alert('Please fill in policy name');return;}
+  if(!r.name){alert('請填保險名稱');return;}
   saveR('ins_jamie',id,r);closeM('m-insj');clr(['insj-eid','insj-co','insj-name','insj-amt','insj-start','insj-end','insj-pid','insj-cover']);
   $('m-insj-t').textContent='新增 Jamie 保單';rInsJ();toast();
 }
@@ -1221,7 +1219,7 @@ function editInsJ(id){
   sv('insj-eid',r.id);$('insj-type').value=r.type||'一般';sv('insj-co',r.co);sv('insj-name',r.name);sv('insj-amt',r.amt||'');sv('insj-start',r.start||'');sv('insj-end',r.end||'');sv('insj-pid',r.pid||'');sv('insj-cover',r.cover||'');
   $('m-insj-t').textContent='編輯 Jamie 保單';openM('m-insj');
 }
-function delInsJ(id){if(!confirm('Delete this entry?'))return;DB.s('ins_jamie',DB.g('ins_jamie').filter(x=>x.id!==id));DB.s('s_ins_jamie',getData('s_ins_jamie','ins_jamie').filter(x=>x.id!==id));rInsJ();toast('✓ Deleted');}
+function delInsJ(id){if(!confirm('確定刪除？'))return;DB.s('ins_jamie',DB.g('ins_jamie').filter(x=>x.id!==id));DB.s('s_ins_jamie',getData('s_ins_jamie','ins_jamie').filter(x=>x.id!==id));rInsJ();toast('✓ 已刪除');}
 
 // CHILD
 function rChild(){
@@ -1238,14 +1236,14 @@ function rChild(){
       <td class="tn">${fmt(r.food)}</td><td class="tn">${fmt(r.life)}</td>
       <td class="tn">${fmt(r.art)}</td><td class="tn">${fmt(r.fee)}</td>
       <td class="tn c2"><strong>${fmt(tot)}</strong></td><td class="tnt">${r.note||''}</td>
-      <td><button class="ab" onclick="editChild('${r.id}')">Edit</button><button class="ab del" onclick="delChild('${r.id}')">Delete</button></td>
+      <td><button class="ab" onclick="editChild('${r.id}')">編輯</button><button class="ab del" onclick="delChild('${r.id}')">刪除</button></td>
     </tr>`;
-  }).join(''):'<tr class="loading-row"><td colspan="9">No data yet</td></tr>';
+  }).join(''):'<tr class="loading-row"><td colspan="9">尚無資料</td></tr>';
 }
 function saveChild(){
   const id=v('child-eid');const food=+(v('child-food')||0),life=+(v('child-life')||0),art=+(v('child-art')||0),fee=+(v('child-fee')||0);
   const r={id:id||DB.id(),stage:v('child-stage')||'國小',school:v('child-school'),food,life,art,fee,note:v('child-note')};
-  if(!r.school){alert('Please fill in school name');return;}
+  if(!r.school){alert('請填學校名稱');return;}
   saveR('child_est',id,r);closeM('m-child');clr(['child-eid','child-school','child-food','child-life','child-art','child-fee','child-note']);
   $('m-child-t').textContent='新增育兒費方案';rChild();toast();
 }
@@ -1254,7 +1252,7 @@ function editChild(id){
   sv('child-eid',r.id);$('child-stage').value=r.stage||'國小';sv('child-school',r.school);sv('child-food',r.food||'');sv('child-life',r.life||'');sv('child-art',r.art||'');sv('child-fee',r.fee||'');sv('child-note',r.note||'');
   $('m-child-t').textContent='編輯育兒費方案';openM('m-child');
 }
-function delChild(id){if(!confirm('Delete this entry?'))return;DB.s('child_est',DB.g('child_est').filter(x=>x.id!==id));DB.s('s_child_est',getData('s_child_est','child_est').filter(x=>x.id!==id));rChild();toast('✓ Deleted');}
+function delChild(id){if(!confirm('確定刪除？'))return;DB.s('child_est',DB.g('child_est').filter(x=>x.id!==id));DB.s('s_child_est',getData('s_child_est','child_est').filter(x=>x.id!==id));rChild();toast('✓ 已刪除');}
 
 // MONTHLY
 function rMo(){
@@ -1266,12 +1264,12 @@ function rMo(){
     <td class="tn c1">${r.wang?fmt(r.wang):'—'}</td><td class="tn c5">${r.ya?fmt(r.ya):'—'}</td>
     <td class="tn c2"><strong>${fmt((+r.wang||0)+(+r.ya||0))}</strong></td>
     <td class="tnt">${r.note||''}</td>
-    <td><button class="ab" onclick="editMo('${r.id}')">Edit</button><button class="ab del" onclick="delMo('${r.id}')">Delete</button></td>
-  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">No data yet</td></tr>';
+    <td><button class="ab" onclick="editMo('${r.id}')">編輯</button><button class="ab del" onclick="delMo('${r.id}')">刪除</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">尚無資料</td></tr>';
 }
 function saveMo(){
   const id=v('mo-eid');const r={id:id||DB.id(),cat:v('mo-cat')||'食',item:v('mo-item'),wang:+(v('mo-wang-i')||0),ya:+(v('mo-ya-i')||0),note:v('mo-note')};
-  if(!r.item){alert('Please fill in item description');return;}
+  if(!r.item){alert('請填項目說明');return;}
   saveR('monthly',id,r);closeM('m-mo');clr(['mo-eid','mo-item','mo-wang-i','mo-ya-i','mo-note']);
   $('m-mo-t').textContent='新增月支出項目';rMo();toast();
 }
@@ -1280,7 +1278,7 @@ function editMo(id){
   sv('mo-eid',r.id);$('mo-cat').value=r.cat||'食';sv('mo-item',r.item);sv('mo-wang-i',r.wang||'');sv('mo-ya-i',r.ya||'');sv('mo-note',r.note||'');
   $('m-mo-t').textContent='編輯月支出項目';openM('m-mo');
 }
-function delMo(id){if(!confirm('Delete this entry?'))return;DB.s('monthly',DB.g('monthly').filter(x=>x.id!==id));DB.s('s_monthly',getData('s_monthly','monthly').filter(x=>x.id!==id));rMo();toast('✓ Deleted');}
+function delMo(id){if(!confirm('確定刪除？'))return;DB.s('monthly',DB.g('monthly').filter(x=>x.id!==id));DB.s('s_monthly',getData('s_monthly','monthly').filter(x=>x.id!==id));rMo();toast('✓ 已刪除');}
 
 // WEALTH — with edit log + snapshot chart
 let wlF='all';
@@ -1317,8 +1315,8 @@ function rWl(){
     <td>${badge(r.owner&&r.owner.includes('JC')?'JC 亞':'CW 王',r.owner&&r.owner.includes('JC')?'b5':'b1')}</td>
     <td class="tn c3">${r.ntd?fmt(r.ntd):'—'}</td><td>${r.fgn||'—'}</td>
     <td>${r.period||'—'}</td><td>${r.rate||'—'}</td><td class="tnt">${r.note||''}</td>
-    <td><button class="ab" onclick="editWl('${r.id}')">Edit</button><button class="ab del" onclick="delWl('${r.id}')">Delete</button></td>
-  </tr>`).join(''):'<tr class="loading-row"><td colspan="9">No data yet</td></tr>';
+    <td><button class="ab" onclick="editWl('${r.id}')">編輯</button><button class="ab del" onclick="delWl('${r.id}')">刪除</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="9">尚無資料</td></tr>';
 
   rWlLog(); rSnaps(); drawWealthChart();
 }
@@ -1329,7 +1327,7 @@ function saveWl(){
   const id=v('wl-eid');
   const old=id?getData('s_wealth','wealth').find(x=>x.id===id):null;
   const r={id:id||DB.id(),type:v('wl-type')||'活存',owner:v('wl-owner')||'JC (亞)',bank:v('wl-bank'),ntd:+(v('wl-ntd')||0),fgn:v('wl-fgn'),period:v('wl-period'),rate:v('wl-rate'),note:v('wl-note')};
-  if(!r.bank){alert('Please enter bank/account name');return;}
+  if(!r.bank){alert('請填銀行名稱');return;}
   // log
   addWlLog(id?'編輯':'新增', r.bank, r.type, old?fmt(old.ntd):'—', fmt(r.ntd), v('wl-note'));
   saveR('wealth',id,r);closeM('m-wl');clr(['wl-eid','wl-bank','wl-ntd','wl-fgn','wl-period','wl-rate','wl-note']);
@@ -1343,10 +1341,10 @@ function editWl(id){
 }
 
 function delWl(id){
-  if(!confirm('Delete this entry?'))return;
+  if(!confirm('確定刪除？'))return;
   const r=getData('s_wealth','wealth').find(x=>x.id===id);
   if(r) addWlLog('刪除',r.bank,r.type,fmt(r.ntd),'—','');
-  DB.s('wealth',DB.g('wealth').filter(x=>x.id!==id));DB.s('s_wealth',getData('s_wealth','wealth').filter(x=>x.id!==id));rWl();toast('✓ Deleted');
+  DB.s('wealth',DB.g('wealth').filter(x=>x.id!==id));DB.s('s_wealth',getData('s_wealth','wealth').filter(x=>x.id!==id));rWl();toast('✓ 已刪除');
 }
 
 // ── Edit Log ──
@@ -1367,9 +1365,9 @@ function rWlLog(){
     <td class="tn" style="color:var(--t3)">${r.before||'—'}</td>
     <td class="tn c3">${r.after||'—'}</td>
     <td class="tnt">${r.note||''}</td>
-  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">No edit history yet</td></tr>';
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">尚無編輯紀錄</td></tr>';
 }
-function clearWlLog(){if(!confirm('Clear all edit history?'))return;DB.s('wl_log',[]);rWlLog();toast('✓ Cleared');}
+function clearWlLog(){if(!confirm('確定清除所有編輯紀錄？'))return;DB.s('wl_log',[]);rWlLog();toast('✓ 已清除');}
 
 // ── Snapshots ──
 function openSnapModal(){
@@ -1385,7 +1383,7 @@ function saveSnap(){
   const jcV=+(v('snap-jc')||0), cwV=+(v('snap-cw')||0);
   const r={id:DB.id(), date:v('snap-date')||new Date().toISOString().slice(0,10), label:v('snap-label')||v('snap-date'), jc:jcV, cw:cwV, total:jcV+cwV, note:v('snap-note')};
   const snaps=DB.g('wl_snaps'); snaps.push(r); snaps.sort((a,b)=>a.date.localeCompare(b.date));
-  DB.s('wl_snaps',snaps); closeM('m-wl-snap'); rWl(); toast('✓ Snapshot saved');
+  DB.s('wl_snaps',snaps); closeM('m-wl-snap'); rWl(); toast('✓ 快照已儲存');
 }
 function rSnaps(){
   const snaps=DB.g('wl_snaps');
@@ -1396,11 +1394,11 @@ function rSnaps(){
     <td class="tn c6">${fmt(r.cw)}</td>
     <td class="tn c7"><strong>${fmt(r.total)}</strong></td>
     <td class="tnt">${r.note||''}</td>
-    <td><button class="ab del" onclick="delSnap('${r.id}')">Delete</button></td>
-  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">No snapshots yet — click 📸 to start tracking</td></tr>';
+    <td><button class="ab del" onclick="delSnap('${r.id}')">刪除</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="7">尚無快照 — 點「📸 記錄快照」開始追蹤</td></tr>';
 }
-function delSnap(id){if(!confirm('Delete this snapshot?'))return;DB.s('wl_snaps',DB.g('wl_snaps').filter(x=>x.id!==id));rWl();toast('✓ Deleted');}
-function clearSnaps(){if(!confirm('Clear all snapshots? The chart will be empty.'))return;DB.s('wl_snaps',[]);rWl();toast('✓ Cleared');}
+function delSnap(id){if(!confirm('確定刪除此快照？'))return;DB.s('wl_snaps',DB.g('wl_snaps').filter(x=>x.id!==id));rWl();toast('✓ 已刪除');}
+function clearSnaps(){if(!confirm('確定清除所有快照？\n圖表將清空。'))return;DB.s('wl_snaps',[]);rWl();toast('✓ 已清除');}
 
 // ── Wealth Chart (Canvas) ──
 function drawWealthChart(){
@@ -1497,17 +1495,17 @@ function rAna(){
   $('ana-save-body').innerHTML=sv_.length?sv_.map(r=>`<tr>
     <td>${badge(r.cat,r.cat==='儲蓄'?'b3':'b5')}</td><td>${r.item||'—'}</td>
     <td class="tn c3">${fmt(r.amt)}</td>
-    <td><button class="ab" onclick="editAna1('${r.id}')">Edit</button><button class="ab del" onclick="delR('ana_save','${r.id}',rAna)">Delete</button></td>
-  </tr>`).join(''):'<tr class="loading-row"><td colspan="4">No data yet</td></tr>';
+    <td><button class="ab" onclick="editAna1('${r.id}')">編輯</button><button class="ab del" onclick="delR('ana_save','${r.id}',rAna)">刪除</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="4">尚無資料</td></tr>';
   $('ana-rsv-body').innerHTML=rv_.length?rv_.map(r=>`<tr>
     <td>${badge(r.cat,r.cat==='備用金'?'b6':'b4')}</td><td>${r.item||'—'}</td>
     <td class="tn c2">${fmt(r.amt)}</td><td class="tnt">${r.note||''}</td>
-    <td><button class="ab" onclick="editAna2('${r.id}')">Edit</button><button class="ab del" onclick="delR('ana_rsv','${r.id}',rAna)">Delete</button></td>
-  </tr>`).join(''):'<tr class="loading-row"><td colspan="5">No data yet</td></tr>';
+    <td><button class="ab" onclick="editAna2('${r.id}')">編輯</button><button class="ab del" onclick="delR('ana_rsv','${r.id}',rAna)">刪除</button></td>
+  </tr>`).join(''):'<tr class="loading-row"><td colspan="5">尚無資料</td></tr>';
 }
-function saveAna1(){const id=v('ana1-eid');const r={id:id||DB.id(),cat:v('ana1-cat')||'儲蓄',item:v('ana1-item'),amt:+(v('ana1-amt')||0)};if(!r.item){alert('Please fill in item name');return;}saveR('ana_save',id,r);closeM('m-ana1');clr(['ana1-eid','ana1-item','ana1-amt']);rAna();toast();}
+function saveAna1(){const id=v('ana1-eid');const r={id:id||DB.id(),cat:v('ana1-cat')||'儲蓄',item:v('ana1-item'),amt:+(v('ana1-amt')||0)};if(!r.item){alert('請填項目');return;}saveR('ana_save',id,r);closeM('m-ana1');clr(['ana1-eid','ana1-item','ana1-amt']);rAna();toast();}
 function editAna1(id){const r=DB.g('ana_save').find(x=>x.id===id);if(!r)return;sv('ana1-eid',r.id);$('ana1-cat').value=r.cat;sv('ana1-item',r.item);sv('ana1-amt',r.amt);openM('m-ana1');}
-function saveAna2(){const id=v('ana2-eid');const r={id:id||DB.id(),cat:v('ana2-cat')||'備用金',item:v('ana2-item'),amt:+(v('ana2-amt')||0),note:v('ana2-note')};if(!r.item){alert('Please fill in item name');return;}saveR('ana_rsv',id,r);closeM('m-ana2');clr(['ana2-eid','ana2-item','ana2-amt','ana2-note']);rAna();toast();}
+function saveAna2(){const id=v('ana2-eid');const r={id:id||DB.id(),cat:v('ana2-cat')||'備用金',item:v('ana2-item'),amt:+(v('ana2-amt')||0),note:v('ana2-note')};if(!r.item){alert('請填項目');return;}saveR('ana_rsv',id,r);closeM('m-ana2');clr(['ana2-eid','ana2-item','ana2-amt','ana2-note']);rAna();toast();}
 function editAna2(id){const r=DB.g('ana_rsv').find(x=>x.id===id);if(!r)return;sv('ana2-eid',r.id);$('ana2-cat').value=r.cat;sv('ana2-item',r.item);sv('ana2-amt',r.amt);sv('ana2-note',r.note||'');openM('m-ana2');}
 
 // STOCK
@@ -1525,13 +1523,13 @@ function rStk(){
       <td class="tn">${fmt(c)}</td><td class="tn">${(+r.price).toFixed(2)}</td>
       <td class="tn">${fmt(m)}</td><td class="tn ${p>=0?'tp':'tn-'}">${p>=0?'+':''}${fmt(p)}</td>
       <td class="tn ${+rt>=0?'tp':'tn-'}">${rt}%</td>
-      <td><button class="ab" onclick="editStk('${r.id}')">Edit</button><button class="ab del" onclick="delStk('${r.id}')">Delete</button></td>
+      <td><button class="ab" onclick="editStk('${r.id}')">編輯</button><button class="ab del" onclick="delStk('${r.id}')">刪除</button></td>
     </tr>`;
-  }).join(''):'<tr class="loading-row"><td colspan="10">No data yet</td></tr>';
+  }).join(''):'<tr class="loading-row"><td colspan="10">尚無資料</td></tr>';
 }
-function saveStk(){const id=v('stk-eid');const r={id:id||DB.id(),name:v('stk-name'),code:v('stk-code'),buy:+(v('stk-buy')||0),shares:+(v('stk-shares')||0),price:+(v('stk-price')||0),note:v('stk-note')};if(!r.name||!r.shares){alert('Please fill in company and shares');return;}saveR('stocks',id,r);closeM('m-stk');clr(['stk-eid','stk-name','stk-code','stk-buy','stk-shares','stk-price','stk-note','stk-prev']);$('m-stk-t').textContent='新增股票持倉';rStk();toast();}
+function saveStk(){const id=v('stk-eid');const r={id:id||DB.id(),name:v('stk-name'),code:v('stk-code'),buy:+(v('stk-buy')||0),shares:+(v('stk-shares')||0),price:+(v('stk-price')||0),note:v('stk-note')};if(!r.name||!r.shares){alert('請填公司和股數');return;}saveR('stocks',id,r);closeM('m-stk');clr(['stk-eid','stk-name','stk-code','stk-buy','stk-shares','stk-price','stk-note','stk-prev']);$('m-stk-t').textContent='新增股票持倉';rStk();toast();}
 function editStk(id){const d=getData('s_stock','stocks');const r=d.find(x=>x.id===id);if(!r)return;sv('stk-eid',r.id);sv('stk-name',r.name);sv('stk-code',r.code||'');sv('stk-buy',r.buy);sv('stk-shares',r.shares);sv('stk-price',r.price||'');sv('stk-note',r.note||'');$('m-stk-t').textContent='編輯股票持倉';prevPnl();openM('m-stk');}
-function delStk(id){if(!confirm('Delete this entry?'))return;DB.s('stocks',DB.g('stocks').filter(x=>x.id!==id));DB.s('s_stock',getData('s_stock','stocks').filter(x=>x.id!==id));rStk();toast('✓ Deleted');}
+function delStk(id){if(!confirm('確定刪除？'))return;DB.s('stocks',DB.g('stocks').filter(x=>x.id!==id));DB.s('s_stock',getData('s_stock','stocks').filter(x=>x.id!==id));rStk();toast('✓ 已刪除');}
 
 // SETTINGS
 function rSettings(){
@@ -1539,22 +1537,22 @@ function rSettings(){
   renderSheetMap();
   updateSyncDetail();
 }
-function clearCache(){if(!confirm('Clear all sync cache?\n(Manually added local data is not affected)'))return;['s_wedding','s_ins_luke','s_ins_jamie','s_child_est','s_monthly','s_wealth','s_wealth_ana','s_stock'].forEach(k=>localStorage.removeItem(k));toast('✓ 快取已清除');}
+function clearCache(){if(!confirm('清除所有同步快取？\n（本機手動新增的資料不受影響）'))return;['s_wedding','s_ins_luke','s_ins_jamie','s_child_est','s_monthly','s_wealth','s_wealth_ana','s_stock'].forEach(k=>localStorage.removeItem(k));toast('✓ 快取已清除');}
 
 /* ══════ PWA INSTALL ══════ */
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();deferredPrompt=e;
   const btn=$('btn-pwa-install');if(btn){btn.style.display='inline-flex';}
-  $('pwa-status').textContent='Ready to install';
+  $('pwa-status').textContent='偵測到可安裝';
 });
 window.addEventListener('appinstalled',()=>{
   $('pwa-status').textContent='✅ 已安裝！';deferredPrompt=null;
 });
 async function installPWA(){
-  if(!deferredPrompt){$('pwa-status').textContent='Use browser menu to install manually';return;}
+  if(!deferredPrompt){$('pwa-status').textContent='請使用瀏覽器選單手動安裝';return;}
   deferredPrompt.prompt();const{outcome}=await deferredPrompt.userChoice;
-  $('pwa-status').textContent=outcome==='accepted'?'✅ Installing...':'Cancelled';deferredPrompt=null;
+  $('pwa-status').textContent=outcome==='accepted'?'✅ 安裝中...':'已取消';deferredPrompt=null;
 }
 
 /* ══════ SERVICE WORKER ══════ */
