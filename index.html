@@ -1108,7 +1108,147 @@ function rHome(){
 }
 
 /* ══════ RENDER PAGES (Sheet data priority, local fallback) ══════ */
-function getData(sheetKey, localKey){ const s=DB.g(sheetKey); return s.length?s:DB.g(localKey); }
+function getData(sheetKey, localKey){
+  const s=DB.g(sheetKey); if(s.length) return s;
+  return DB.g(localKey);
+}
+
+// 各 key 對應的預設資料
+function autoInitKey(key){
+  if(DB.g(key).length) return; // 已有資料就跳過
+  const defaults = getDefaults();
+  if(defaults[key]) DB.s(key, defaults[key]);
+}
+
+function getDefaults(){
+  return {
+    wedding:[
+      {id:DB.id(),cat:'提親',item:'果汁、水果、蛋糕、洗車、油錢、停車、為福樓',total:5754,ya:2905,wang:2849,note:'2015.04.04'},
+      {id:DB.id(),cat:'健康檢查',item:'啾(3594)+亞(5825)',total:9419,ya:9419,wang:0,note:'2015.05.01 亞刷匯豐'},
+      {id:DB.id(),cat:'餅',item:'郭元益 $610/盒 x60盒',total:36600,ya:36600,wang:0,note:'亞刷元大三次付清'},
+      {id:DB.id(),cat:'帖',item:'喜帖+LOVE緞帶+義大利紙',total:2873,ya:2873,wang:0,note:'2015.08.22 亞匯款'},
+      {id:DB.id(),cat:'喜宴',item:'21桌+6套菜單 國賓飯店',total:345576,ya:115192,wang:230384,note:'男230384+女115192'},
+      {id:DB.id(),cat:'喜宴',item:'酒',total:5000,ya:5000,wang:0,note:''},
+      {id:DB.id(),cat:'交通',item:'火車+遊覽車+過路費+洗車油錢',total:12889,ya:1300,wang:11589,note:''},
+      {id:DB.id(),cat:'房間',item:'雙人房+四人房+早餐',total:9600,ya:9600,wang:0,note:'2015.06.17 亞刷元大'},
+      {id:DB.id(),cat:'人員',item:'新秘+婚攝+主持人+拍攝包套',total:45098,ya:22549,wang:22549,note:''},
+      {id:DB.id(),cat:'紅包',item:'紅包+簽到+配合費等',total:8564,ya:0,wang:8564,note:''},
+      {id:DB.id(),cat:'婚紗',item:'婚紗+外拍+相本+影片',total:55862,ya:27931,wang:27931,note:''},
+      {id:DB.id(),cat:'穿搭',item:'婚鞋+皇冠+西裝+對戒+手錶',total:32950,ya:11475,wang:21475,note:''},
+      {id:DB.id(),cat:'禮品',item:'U型頸枕+多肉+包裝盒',total:4978,ya:2489,wang:2489,note:''},
+      {id:DB.id(),cat:'佈置',item:'相框+玫瑰+手捧花+星星燈',total:12014,ya:6007,wang:6007,note:''},
+      {id:DB.id(),cat:'收禮',item:'帶路雞+甘蔗+鞭炮+蓮蓬頭+枕頭',total:4084,ya:4084,wang:0,note:''},
+      {id:DB.id(),cat:'雜費',item:'簽名筆+愛情MV+鑽石',total:1826,ya:913,wang:913,note:''},
+    ],
+    ins_luke:[
+      {id:DB.id(),type:'壽險',co:'遠雄',name:'雄安心終身保險',code:'FX7 10萬',yrs:20,age:'終身',prem:2410,period:'2017.05.08-2037.05.08'},
+      {id:DB.id(),type:'意外',co:'遠雄',name:'傷害保險附約',code:'RHA 100萬',yrs:1,age:'75',prem:110,period:''},
+      {id:DB.id(),type:'意外',co:'遠雄',name:'超級新人生傷害保險附約',code:'XHG 50萬',yrs:1,age:'80',prem:105,period:''},
+      {id:DB.id(),type:'意外實支',co:'遠雄',name:'實支實付傷害醫療保險金附約',code:'MRB 3萬',yrs:1,age:'75',prem:369,period:''},
+      {id:DB.id(),type:'意外日額',co:'遠雄',name:'雄安康醫療日額給付傷害保險附約',code:'RHG 1000元',yrs:1,age:'75',prem:550,period:''},
+      {id:DB.id(),type:'實支實付',co:'遠雄',name:'康復醫療健康保險附約',code:'RJ1 計劃二',yrs:1,age:'84',prem:2976,period:''},
+      {id:DB.id(),type:'燒燙傷',co:'遠雄',name:'重大燒燙傷保險金批註條款',code:'RHD 100萬',yrs:1,age:'75',prem:120,period:''},
+      {id:DB.id(),type:'癌症',co:'遠雄',name:'一年定期癌症健康保險附約',code:'XCD 6單位',yrs:1,age:'70',prem:1410,period:''},
+      {id:DB.id(),type:'癌症',co:'友邦',name:'愛無憂加倍防癌保險',code:'ICAN 250萬',yrs:30,age:'30',prem:2250,period:'2017.05.08-2047.05.08'},
+      {id:DB.id(),type:'殘扶',co:'友邦',name:'友備無患一年定期保險',code:'DIYR 3萬',yrs:1,age:'75',prem:870,period:''},
+      {id:DB.id(),type:'殘廢',co:'友邦',name:'十一助行殘廢照顧保險附約',code:'YRDR 200萬',yrs:1,age:'80',prem:760,period:''},
+      {id:DB.id(),type:'意外',co:'富邦',name:'新兒童十全大補',code:'新十全 C',yrs:1,age:'15',prem:1927,period:'2017.05.17-2018.05.17'},
+      {id:DB.id(),type:'癌症',co:'新安東京',name:'真心安癌症健康保險',code:'真心安 C',yrs:1,age:'60',prem:157,period:'2017.05.08-2018.05.08'},
+      {id:DB.id(),type:'殘扶',co:'全球',name:'安養久久終身健康保險',code:'LDC20 1萬',yrs:20,age:'終身',prem:2840,period:'2017.05.08-2127.05.08'},
+      {id:DB.id(),type:'實支實付',co:'全球',name:'醫療費用健康保險附約',code:'XHR 計劃五',yrs:1,age:'80',prem:3147,period:''},
+    ],
+    claims:[
+      {id:DB.id(),date:'2017-11-01',reason:'腸病毒住院',co:'遠雄/全球/南山',amt:23720,note:''},
+      {id:DB.id(),date:'2018-10-30',reason:'疑似諾羅住院 (2018.10.30-11.1)',co:'遠雄/全球/南山',amt:27655,note:''},
+      {id:DB.id(),date:'2019-07-01',reason:'額頭縫針',co:'遠雄/全球',amt:4941,note:''},
+      {id:DB.id(),date:'2022-03-24',reason:'諾羅病毒 (2022.03.24-03.27)',co:'遠雄/全球/國泰',amt:29368,note:''},
+    ],
+    ins_jamie:[
+      {id:DB.id(),type:'一般',co:'三商美邦',name:'二十年繳費祥安終身壽險 20AWL',amt:1000000,start:'1995/08/31',end:'177/08/31',pid:'118600055564_01',cover:'身故、完全失能或最高級失能'},
+      {id:DB.id(),type:'一般',co:'三商美邦',name:'意外身故及殘廢保險金 ADDR',amt:0,start:'95/08/31',end:'148/08/31',pid:'118600055564_02',cover:'完全失能、身故'},
+      {id:DB.id(),type:'醫療',co:'三商美邦',name:'傷害醫療保險金限額 AMRR',amt:30000,start:'1995/08/31',end:'148/08/31',pid:'118600055564_03',cover:'實支實付'},
+      {id:DB.id(),type:'醫療',co:'三商美邦',name:'傷害醫療保險金日額 DHIR',amt:1000,start:'1995/08/31',end:'148/08/31',pid:'118600055564_04',cover:'日額型'},
+      {id:DB.id(),type:'住院/手術/醫療',co:'三商美邦',name:'新住院醫療保險附約 HSRSD',amt:60000,start:'1995/08/31',end:'147/08/31',pid:'118600055564_05',cover:'日額/實支實付擇一'},
+      {id:DB.id(),type:'門診/出院',co:'三商美邦',name:'二十年繳費日額型住院醫療終身健康保險附約 20HIW',amt:1000,start:'1995/08/31',end:'177/08/31',pid:'118600055564_06',cover:'日額、門診、出院療養'},
+      {id:DB.id(),type:'手術',co:'三商美邦',name:'二十年繳費手術醫療終身健康保險附約 20SIW',amt:1000,start:'1995/08/31',end:'177/08/31',pid:'118600055564_07',cover:'住院手術'},
+      {id:DB.id(),type:'一般',co:'宏泰人壽',name:'宏泰人壽增額終身壽險(不分紅保單)',amt:172917,start:'95/08/17',end:'183/08/17',pid:'1108108229-01',cover:'身故、完全失能'},
+      {id:DB.id(),type:'一般',co:'新光人壽',name:'新光人壽金寶貝終身還本壽險',amt:300000,start:'88/12/20',end:'185/12/31',pid:'A3ABE39610-01',cover:'身故、完全失能'},
+      {id:DB.id(),type:'一般',co:'新光人壽',name:'新光人壽傳家寶終身還本保險',amt:600000,start:'88/12/20',end:'185/12/31',pid:'AEBB619960-01',cover:'身故、完全失能'},
+      {id:DB.id(),type:'重大疾病',co:'新光人壽',name:'新光人壽新長安終身壽險',amt:180000,start:'88/12/12',end:'185/12/31',pid:'ACHA745900-01',cover:'重大疾病、完全失能、身故'},
+      {id:DB.id(),type:'癌症',co:'新光人壽',name:'新光人壽防癌健康終身保險',amt:500000,start:'88/12/20',end:'185/12/31',pid:'AMMBU53000-01',cover:'身故、初次罹患、日額、住院手術'},
+    ],
+    child_est:[
+      {id:DB.id(),stage:'國小',school:'龍華',food:6000,life:1800,art:12510,fee:7983,note:'英文/作文/書法/鋼琴'},
+      {id:DB.id(),stage:'國小',school:'YMCA',food:6000,life:1800,art:9922,fee:15222,note:'英文/籃球/鋼琴/課本/交通'},
+      {id:DB.id(),stage:'國小',school:'米睿可',food:6000,life:1800,art:5833,fee:8000,note:'英文每周二次各120分鐘'},
+      {id:DB.id(),stage:'國中',school:'公立(興雅)',food:12000,life:1500,art:16000,fee:500,note:'數學+英文補習'},
+      {id:DB.id(),stage:'高中',school:'私立',food:12000,life:1500,art:16000,fee:5000,note:'數學+英文補習'},
+      {id:DB.id(),stage:'高中',school:'公立',food:12000,life:1500,art:8333,fee:1167,note:'鋼琴+數學補習'},
+      {id:DB.id(),stage:'大學',school:'私立',food:12000,life:1500,art:0,fee:11667,note:'住校費含在生活費'},
+      {id:DB.id(),stage:'大學',school:'公立',food:12000,life:1500,art:0,fee:5833,note:''},
+      {id:DB.id(),stage:'研究所',school:'公立',food:12000,life:1500,art:0,fee:16667,note:''},
+    ],
+    monthly:[
+      {id:DB.id(),cat:'食',item:'工作日+假日飲食',wang:7500,ya:7500,note:'平日250x23+假日350x8'},
+      {id:DB.id(),cat:'行',item:'捷運+機車油錢',wang:400,ya:200,note:''},
+      {id:DB.id(),cat:'行',item:'汽車油錢+過路費',wang:1400,ya:1400,note:'台北竹南來回x4趟'},
+      {id:DB.id(),cat:'住',item:'房貸',wang:20000,ya:4000,note:'貸款400萬 2.185% 20年'},
+      {id:DB.id(),cat:'育兒',item:'育兒費(禹皓)',wang:10000,ya:10000,note:'2026-2042年'},
+      {id:DB.id(),cat:'保險|儲蓄',item:'人身保險年繳',wang:3000,ya:5000,note:'各自保單'},
+      {id:DB.id(),cat:'孝親費',item:'孝親費',wang:4000,ya:4000,note:'$48,000/年'},
+      {id:DB.id(),cat:'娛樂',item:'娛樂費',wang:500,ya:500,note:''},
+      {id:DB.id(),cat:'旅遊',item:'旅遊基金',wang:3000,ya:3000,note:'$3,000/月/人'},
+      {id:DB.id(),cat:'養老金',item:'養老儲蓄',wang:2000,ya:2000,note:'43~65歲 $5,000/月/人'},
+      {id:DB.id(),cat:'稅費/雜費',item:'水電瓦斯網路手機管理費',wang:5700,ya:0,note:'兩人合計'},
+      {id:DB.id(),cat:'稅費/雜費',item:'車輛年費(保養/牌照/燃料/保險)',wang:5500,ya:0,note:'$64,686/年÷12'},
+    ],
+    wealth:[
+      {id:DB.id(),type:'活存',owner:'CW (王)',bank:'LINE BANK',ntd:57620,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'活存',owner:'CW (王)',bank:'台新',ntd:18000,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'活存',owner:'CW (王)',bank:'台企',ntd:452,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'活存',owner:'CW (王)',bank:'富邦',ntd:100,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'外幣',owner:'CW (王)',bank:'第一銀行',ntd:46080,fgn:'1,536 USD',period:'',rate:'',note:''},
+      {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'上海銀行',ntd:542499,fgn:'',period:'12/6個月',rate:'1.415%/1.725%',note:'8/27, 8/25到期'},
+      {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'兆豐 41031實體',ntd:602168,fgn:'',period:'3個月',rate:'1.285%',note:'2025/03/23到期'},
+      {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'兆豐 03943數位',ntd:967423,fgn:'',period:'6/1個月',rate:'1.445%/1.225%',note:''},
+      {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'LINE BANK',ntd:50000,fgn:'',period:'',rate:'1.5%',note:''},
+      {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'台灣銀行',ntd:320000,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'郵局',ntd:79642,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'活存',owner:'JC (亞)',bank:'兆豐 41031實體',ntd:413548,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'活存',owner:'JC (亞)',bank:'兆豐 03943數位',ntd:7413,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'活存',owner:'JC (亞)',bank:'富邦',ntd:1838363,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'活存',owner:'JC (亞)',bank:'華南',ntd:338596,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'活存',owner:'JC (亞)',bank:'第一銀行',ntd:1296,fgn:'',period:'',rate:'',note:''},
+      {id:DB.id(),type:'外幣',owner:'JC (亞)',bank:'第一銀行 USD定存',ntd:288447,fgn:'9,614.91 USD',period:'12個月',rate:'2.55%',note:'2025/06到期'},
+      {id:DB.id(),type:'外幣',owner:'JC (亞)',bank:'台灣銀行 JPY',ntd:65152,fgn:'295,741 JPY',period:'',rate:'',note:''},
+      {id:DB.id(),type:'投資',owner:'JC (亞)',bank:'富邦基金',ntd:482524,fgn:'',period:'',rate:'',note:'2026/01/19查詢'},
+      {id:DB.id(),type:'勞退',owner:'JC (亞)',bank:'勞保局',ntd:283191,fgn:'',period:'',rate:'',note:'2019.07.03查詢'},
+    ],
+    ana_save:[
+      {id:DB.id(),cat:'儲蓄',item:'王_活存+外幣',amt:122252},
+      {id:DB.id(),cat:'儲蓄',item:'亞_活存',amt:2598216},
+      {id:DB.id(),cat:'儲蓄',item:'亞_定存',amt:2561732},
+      {id:DB.id(),cat:'儲蓄',item:'亞_外幣',amt:353599},
+      {id:DB.id(),cat:'投資保險',item:'亞_基金',amt:482524},
+      {id:DB.id(),cat:'投資保險',item:'亞_勞退',amt:283191},
+    ],
+    ana_rsv:[
+      {id:DB.id(),cat:'備用金',item:'急_1年_王亞',amt:1860000,note:'月支出×2年'},
+      {id:DB.id(),cat:'備用金',item:'育兒_到13歲',amt:1413000,note:''},
+      {id:DB.id(),cat:'備用金',item:'養老儲蓄',amt:120000,note:'$500x12x2'},
+      {id:DB.id(),cat:'預計支出',item:'2026 年家用',amt:528288,note:'44,024x12'},
+      {id:DB.id(),cat:'預計支出',item:'2026 旅遊+娛樂',amt:84000,note:'$350x12x2'},
+      {id:DB.id(),cat:'預計支出',item:'2026 房貸',amt:288000,note:'24,000x12'},
+      {id:DB.id(),cat:'預計支出',item:'亞 2026 額外支出',amt:229800,note:'19,150x12'},
+    ],
+    stocks:[
+      {id:DB.id(),name:'精剛',code:'',buy:21.38,shares:4000,price:19.8,note:''},
+      {id:DB.id(),name:'群創',code:'3481',buy:25.2,shares:3000,price:23.45,note:'長期持有'},
+      {id:DB.id(),name:'如興',code:'',buy:12.13,shares:263,price:10.25,note:''},
+      {id:DB.id(),name:'淳安',code:'',buy:21.03,shares:1000,price:22.7,note:''},
+    ],
+  };
+}
 
 // WEDDING
 let wedF='all';
@@ -1117,7 +1257,7 @@ function rWed(){
   const cats=[...new Set(d.map(r=>r.cat).filter(Boolean))];
   const pc=$('wed-pills');
   if(!pc.children.length||pc.dataset.built!='1'){
-    pc.innerHTML='<button class="pill on" onclick="setWedF(\'all\',this)">All</button>';
+    pc.innerHTML='<button class="pill on" onclick="setWedF(\'all\',this)">全部</button>';
     cats.forEach(c=>pc.innerHTML+=`<button class="pill" onclick="setWedF('${c}',this)">${c}</button>`);
     pc.dataset.built='1';
   }
@@ -1153,7 +1293,7 @@ function rInsL(){
   const types=[...new Set(d.map(r=>r.type).filter(Boolean))];
   const pc=$('insl-pills');
   if(!pc.children.length||pc.dataset.built!='1'){
-    pc.innerHTML='<button class="pill on" onclick="setInslF(\'all\',this)">All</button>';
+    pc.innerHTML='<button class="pill on" onclick="setInslF(\'all\',this)">全部</button>';
     types.forEach(t=>pc.innerHTML+=`<button class="pill" onclick="setInslF('${t}',this)">${t}</button>`);
     pc.dataset.built='1';
   }
@@ -1204,7 +1344,7 @@ function rInsJ(){
   const types=[...new Set(d.map(r=>r.type).filter(Boolean))];
   const pc=$('insj-pills');
   if(!pc.children.length||pc.dataset.built!='1'){
-    pc.innerHTML='<button class="pill on" onclick="setInsjF(\'all\',this)">All</button>';
+    pc.innerHTML='<button class="pill on" onclick="setInsjF(\'all\',this)">全部</button>';
     types.forEach(t=>pc.innerHTML+=`<button class="pill" onclick="setInsjF('${t}',this)">${t}</button>`);
     pc.dataset.built='1';
   }
@@ -1303,7 +1443,7 @@ function rWl(){
   let d=getData('s_wealth','wealth');
   const pc=$('wl-pills');
   if(!pc.children.length||pc.dataset.built!='1'){
-    pc.innerHTML='<button class="pill on" onclick="setWlF(\'all\',this)">All</button>';
+    pc.innerHTML='<button class="pill on" onclick="setWlF(\'all\',this)">全部</button>';
     ['JC (亞)','CW (王)','活存','定存','外幣','投資','勞退'].forEach(f=>pc.innerHTML+=`<button class="pill" onclick="setWlF('${f}',this)">${f}</button>`);
     pc.dataset.built='1';
   }
@@ -1575,167 +1715,24 @@ if('serviceWorker' in navigator){
 /* ══════ DEFAULT DATA ══════ */
 function resetDefaultData(){
   if(!confirm('確定重新載入預設資料？\n現有本機資料會被覆蓋。')) return;
-
-  DB.s('wedding',[
-    {id:DB.id(),cat:'提親',item:'果汁、水果、蛋糕、洗車、油錢、停車、為福樓',total:5754,ya:2905,wang:2849,note:'2015.04.04'},
-    {id:DB.id(),cat:'健康檢查',item:'啾(3594)+亞(5825)',total:9419,ya:9419,wang:0,note:'2015.05.01 亞刷匯豐'},
-    {id:DB.id(),cat:'餅',item:'郭元益 $610/盒 x60盒',total:36600,ya:36600,wang:0,note:'亞刷元大三次付清'},
-    {id:DB.id(),cat:'帖',item:'喜帖+LOVE緞帶+義大利紙',total:2873,ya:2873,wang:0,note:'2015.08.22 亞匯款'},
-    {id:DB.id(),cat:'喜宴',item:'21桌+6套菜單 國賓飯店',total:345576,ya:115192,wang:230384,note:'男230384+女115192'},
-    {id:DB.id(),cat:'喜宴',item:'酒',total:5000,ya:5000,wang:0,note:''},
-    {id:DB.id(),cat:'交通',item:'火車+遊覽車+過路費+洗車油錢',total:12889,ya:1300,wang:11589,note:''},
-    {id:DB.id(),cat:'房間',item:'雙人房+四人房+早餐',total:9600,ya:9600,wang:0,note:'2015.06.17 亞刷元大'},
-    {id:DB.id(),cat:'人員',item:'新秘+婚攝+主持人+拍攝包套',total:45098,ya:22549,wang:22549,note:''},
-    {id:DB.id(),cat:'紅包',item:'紅包+簽到+配合費等',total:8564,ya:0,wang:8564,note:''},
-    {id:DB.id(),cat:'婚紗',item:'婚紗+外拍+相本+影片',total:55862,ya:27931,wang:27931,note:''},
-    {id:DB.id(),cat:'穿搭',item:'婚鞋+皇冠+西裝+對戒+手錶',total:32950,ya:11475,wang:21475,note:''},
-    {id:DB.id(),cat:'禮品',item:'U型頸枕+多肉+包裝盒',total:4978,ya:2489,wang:2489,note:''},
-    {id:DB.id(),cat:'佈置',item:'相框+玫瑰+手捧花+星星燈',total:12014,ya:6007,wang:6007,note:''},
-    {id:DB.id(),cat:'收禮',item:'帶路雞+甘蔗+鞭炮+蓮蓬頭+枕頭',total:4084,ya:4084,wang:0,note:''},
-    {id:DB.id(),cat:'雜費',item:'簽名筆+愛情MV+鑽石',total:1826,ya:913,wang:913,note:''},
-  ]);
-
-  DB.s('ins_luke',[
-    {id:DB.id(),type:'壽險',co:'遠雄',name:'雄安心終身保險',code:'FX7 10萬',yrs:20,age:'終身',prem:2410,period:'2017.05.08-2037.05.08'},
-    {id:DB.id(),type:'意外',co:'遠雄',name:'傷害保險附約',code:'RHA 100萬',yrs:1,age:'75',prem:110,period:''},
-    {id:DB.id(),type:'意外',co:'遠雄',name:'超級新人生傷害保險附約',code:'XHG 50萬',yrs:1,age:'80',prem:105,period:''},
-    {id:DB.id(),type:'意外實支',co:'遠雄',name:'實支實付傷害醫療保險金附約',code:'MRB 3萬',yrs:1,age:'75',prem:369,period:''},
-    {id:DB.id(),type:'意外日額',co:'遠雄',name:'雄安康醫療日額給付傷害保險附約',code:'RHG 1000元',yrs:1,age:'75',prem:550,period:''},
-    {id:DB.id(),type:'實支實付',co:'遠雄',name:'康復醫療健康保險附約',code:'RJ1 計劃二',yrs:1,age:'84',prem:2976,period:''},
-    {id:DB.id(),type:'燒燙傷',co:'遠雄',name:'重大燒燙傷保險金批註條款',code:'RHD 100萬',yrs:1,age:'75',prem:120,period:''},
-    {id:DB.id(),type:'癌症',co:'遠雄',name:'一年定期癌症健康保險附約',code:'XCD 6單位',yrs:1,age:'70',prem:1410,period:''},
-    {id:DB.id(),type:'癌症',co:'友邦',name:'愛無憂加倍防癌保險',code:'ICAN 250萬',yrs:30,age:'30',prem:2250,period:'2017.05.08-2047.05.08'},
-    {id:DB.id(),type:'殘扶',co:'友邦',name:'友備無患一年定期保險',code:'DIYR 3萬',yrs:1,age:'75',prem:870,period:''},
-    {id:DB.id(),type:'殘廢',co:'友邦',name:'十一助行殘廢照顧保險附約',code:'YRDR 200萬',yrs:1,age:'80',prem:760,period:''},
-    {id:DB.id(),type:'意外',co:'富邦',name:'新兒童十全大補',code:'新十全 C',yrs:1,age:'15',prem:1927,period:'2017.05.17-2018.05.17'},
-    {id:DB.id(),type:'癌症',co:'新安東京',name:'真心安癌症健康保險',code:'真心安 C',yrs:1,age:'60',prem:157,period:'2017.05.08-2018.05.08'},
-    {id:DB.id(),type:'殘扶',co:'全球',name:'安養久久終身健康保險',code:'LDC20 1萬',yrs:20,age:'終身',prem:2840,period:'2017.05.08-2127.05.08'},
-    {id:DB.id(),type:'實支實付',co:'全球',name:'醫療費用健康保險附約',code:'XHR 計劃五',yrs:1,age:'80',prem:3147,period:''},
-  ]);
-
-  DB.s('claims',[
-    {id:DB.id(),date:'2017-11-01',reason:'腸病毒住院',co:'遠雄/全球/南山',amt:23720,note:''},
-    {id:DB.id(),date:'2018-10-30',reason:'疑似諾羅住院 (2018.10.30-11.1)',co:'遠雄/全球/南山',amt:27655,note:''},
-    {id:DB.id(),date:'2019-07-01',reason:'額頭縫針',co:'遠雄/全球',amt:4941,note:''},
-    {id:DB.id(),date:'2022-03-24',reason:'諾羅病毒 (2022.03.24-03.27)',co:'遠雄/全球/國泰',amt:29368,note:''},
-  ]);
-
-  DB.s('ins_jamie',[
-    {id:DB.id(),type:'一般',co:'三商美邦',name:'二十年繳費祥安終身壽險 20AWL',amt:1000000,start:'1995/08/31',end:'177/08/31',pid:'118600055564_01',cover:'身故、完全失能或最高級失能'},
-    {id:DB.id(),type:'一般',co:'三商美邦',name:'意外身故及殘廢保險金 ADDR',amt:0,start:'95/08/31',end:'148/08/31',pid:'118600055564_02',cover:'完全失能、身故'},
-    {id:DB.id(),type:'醫療',co:'三商美邦',name:'傷害醫療保險金限額 AMRR',amt:30000,start:'1995/08/31',end:'148/08/31',pid:'118600055564_03',cover:'實支實付'},
-    {id:DB.id(),type:'醫療',co:'三商美邦',name:'傷害醫療保險金日額 DHIR',amt:1000,start:'1995/08/31',end:'148/08/31',pid:'118600055564_04',cover:'日額型'},
-    {id:DB.id(),type:'住院/手術/醫療',co:'三商美邦',name:'新住院醫療保險附約 HSRSD',amt:60000,start:'1995/08/31',end:'147/08/31',pid:'118600055564_05',cover:'日額/實支實付擇一'},
-    {id:DB.id(),type:'門診/出院',co:'三商美邦',name:'二十年繳費日額型住院醫療終身健康保險附約 20HIW',amt:1000,start:'1995/08/31',end:'177/08/31',pid:'118600055564_06',cover:'日額、門診、出院療養'},
-    {id:DB.id(),type:'手術',co:'三商美邦',name:'二十年繳費手術醫療終身健康保險附約 20SIW',amt:1000,start:'1995/08/31',end:'177/08/31',pid:'118600055564_07',cover:'住院手術'},
-    {id:DB.id(),type:'一般',co:'宏泰人壽',name:'宏泰人壽增額終身壽險(不分紅保單)',amt:172917,start:'95/08/17',end:'183/08/17',pid:'1108108229-01',cover:'身故、完全失能'},
-    {id:DB.id(),type:'一般',co:'新光人壽',name:'新光人壽金寶貝終身還本壽險',amt:300000,start:'88/12/20',end:'185/12/31',pid:'A3ABE39610-01',cover:'身故、完全失能'},
-    {id:DB.id(),type:'一般',co:'新光人壽',name:'新光人壽傳家寶終身還本保險',amt:600000,start:'88/12/20',end:'185/12/31',pid:'AEBB619960-01',cover:'身故、完全失能'},
-    {id:DB.id(),type:'重大疾病',co:'新光人壽',name:'新光人壽新長安終身壽險',amt:180000,start:'88/12/12',end:'185/12/31',pid:'ACHA745900-01',cover:'重大疾病、完全失能、身故'},
-    {id:DB.id(),type:'癌症',co:'新光人壽',name:'新光人壽防癌健康終身保險',amt:500000,start:'88/12/20',end:'185/12/31',pid:'AMMBU53000-01',cover:'身故、初次罹患、日額、住院手術'},
-  ]);
-
-  DB.s('child_est',[
-    {id:DB.id(),stage:'國小',school:'龍華',food:6000,life:1800,art:12510,fee:7983,note:'英文/作文/書法/鋼琴'},
-    {id:DB.id(),stage:'國小',school:'YMCA',food:6000,life:1800,art:9922,fee:15222,note:'英文/籃球/鋼琴/課本/交通'},
-    {id:DB.id(),stage:'國小',school:'米睿可',food:6000,life:1800,art:5833,fee:8000,note:'英文每周二次各120分鐘'},
-    {id:DB.id(),stage:'國中',school:'公立(興雅)',food:12000,life:1500,art:16000,fee:500,note:'數學+英文補習'},
-    {id:DB.id(),stage:'高中',school:'私立',food:12000,life:1500,art:16000,fee:5000,note:'數學+英文補習'},
-    {id:DB.id(),stage:'高中',school:'公立',food:12000,life:1500,art:8333,fee:1167,note:'鋼琴+數學補習'},
-    {id:DB.id(),stage:'大學',school:'私立',food:12000,life:1500,art:0,fee:11667,note:'住校費含在生活費'},
-    {id:DB.id(),stage:'大學',school:'公立',food:12000,life:1500,art:0,fee:5833,note:''},
-    {id:DB.id(),stage:'研究所',school:'公立',food:12000,life:1500,art:0,fee:16667,note:''},
-  ]);
-
-  DB.s('monthly',[
-    {id:DB.id(),cat:'食',item:'工作日+假日飲食',wang:7500,ya:7500,note:'平日250x23+假日350x8'},
-    {id:DB.id(),cat:'行',item:'捷運+機車油錢',wang:400,ya:200,note:''},
-    {id:DB.id(),cat:'行',item:'汽車油錢+過路費',wang:1400,ya:1400,note:'台北竹南來回x4趟'},
-    {id:DB.id(),cat:'住',item:'房貸',wang:20000,ya:4000,note:'貸款400萬 2.185% 20年'},
-    {id:DB.id(),cat:'育兒',item:'育兒費(禹皓)',wang:10000,ya:10000,note:'2026-2042年'},
-    {id:DB.id(),cat:'保險|儲蓄',item:'人身保險年繳',wang:3000,ya:5000,note:'各自保單'},
-    {id:DB.id(),cat:'孝親費',item:'孝親費',wang:4000,ya:4000,note:'$48,000/年'},
-    {id:DB.id(),cat:'娛樂',item:'娛樂費',wang:500,ya:500,note:''},
-    {id:DB.id(),cat:'旅遊',item:'旅遊基金',wang:3000,ya:3000,note:'$3,000/月/人'},
-    {id:DB.id(),cat:'養老金',item:'養老儲蓄',wang:2000,ya:2000,note:'43~65歲 $5,000/月/人'},
-    {id:DB.id(),cat:'稅費/雜費',item:'水電瓦斯網路手機管理費',wang:5700,ya:0,note:'兩人合計'},
-    {id:DB.id(),cat:'稅費/雜費',item:'車輛年費(保養/牌照/燃料/保險)',wang:5500,ya:0,note:'$64,686/年÷12'},
-  ]);
-
-  DB.s('wealth',[
-    {id:DB.id(),type:'活存',owner:'CW (王)',bank:'LINE BANK',ntd:57620,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'活存',owner:'CW (王)',bank:'台新',ntd:18000,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'活存',owner:'CW (王)',bank:'台企',ntd:452,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'活存',owner:'CW (王)',bank:'富邦',ntd:100,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'外幣',owner:'CW (王)',bank:'第一銀行',ntd:46080,fgn:'1,536 USD',period:'',rate:'',note:''},
-    {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'上海銀行',ntd:542499,fgn:'',period:'12/6個月',rate:'1.415%/1.725%',note:'8/27, 8/25到期'},
-    {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'兆豐 41031實體',ntd:602168,fgn:'',period:'3個月',rate:'1.285%',note:'2025/03/23到期'},
-    {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'兆豐 03943數位',ntd:967423,fgn:'',period:'6/1個月',rate:'1.445%/1.225%',note:''},
-    {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'LINE BANK',ntd:50000,fgn:'',period:'',rate:'1.5%',note:''},
-    {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'台灣銀行',ntd:320000,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'定存',owner:'JC (亞)',bank:'郵局',ntd:79642,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'活存',owner:'JC (亞)',bank:'兆豐 41031實體',ntd:413548,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'活存',owner:'JC (亞)',bank:'兆豐 03943數位',ntd:7413,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'活存',owner:'JC (亞)',bank:'富邦',ntd:1838363,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'活存',owner:'JC (亞)',bank:'華南',ntd:338596,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'活存',owner:'JC (亞)',bank:'第一銀行',ntd:1296,fgn:'',period:'',rate:'',note:''},
-    {id:DB.id(),type:'外幣',owner:'JC (亞)',bank:'第一銀行 USD定存',ntd:288447,fgn:'9,614.91 USD',period:'12個月',rate:'2.55%',note:'2025/06到期'},
-    {id:DB.id(),type:'外幣',owner:'JC (亞)',bank:'台灣銀行 JPY',ntd:65152,fgn:'295,741 JPY',period:'',rate:'',note:''},
-    {id:DB.id(),type:'投資',owner:'JC (亞)',bank:'富邦基金',ntd:482524,fgn:'',period:'',rate:'',note:'2026/01/19查詢'},
-    {id:DB.id(),type:'勞退',owner:'JC (亞)',bank:'勞保局',ntd:283191,fgn:'',period:'',rate:'',note:'2019.07.03查詢'},
-  ]);
-
-  DB.s('ana_save',[
-    {id:DB.id(),cat:'儲蓄',item:'王_活存+外幣',amt:122252},
-    {id:DB.id(),cat:'儲蓄',item:'亞_活存',amt:2598216},
-    {id:DB.id(),cat:'儲蓄',item:'亞_定存',amt:2561732},
-    {id:DB.id(),cat:'儲蓄',item:'亞_外幣',amt:353599},
-    {id:DB.id(),cat:'投資保險',item:'亞_基金',amt:482524},
-    {id:DB.id(),cat:'投資保險',item:'亞_勞退',amt:283191},
-  ]);
-
-  DB.s('ana_rsv',[
-    {id:DB.id(),cat:'備用金',item:'急_1年_王亞',amt:1860000,note:'月支出×2年'},
-    {id:DB.id(),cat:'備用金',item:'育兒_到13歲',amt:1413000,note:''},
-    {id:DB.id(),cat:'備用金',item:'養老儲蓄',amt:120000,note:'$500x12x2'},
-    {id:DB.id(),cat:'預計支出',item:'2026 年家用',amt:528288,note:'44,024x12'},
-    {id:DB.id(),cat:'預計支出',item:'2026 旅遊+娛樂',amt:84000,note:'$350x12x2'},
-    {id:DB.id(),cat:'預計支出',item:'2026 房貸',amt:288000,note:'24,000x12'},
-    {id:DB.id(),cat:'預計支出',item:'亞 2026 額外支出',amt:229800,note:'19,150x12'},
-  ]);
-
-  DB.s('stocks',[
-    {id:DB.id(),name:'精剛',code:'',buy:21.38,shares:4000,price:19.8,note:''},
-    {id:DB.id(),name:'群創',code:'3481',buy:25.2,shares:3000,price:23.45,note:'長期持有'},
-    {id:DB.id(),name:'如興',code:'',buy:12.13,shares:263,price:10.25,note:''},
-    {id:DB.id(),name:'淳安',code:'',buy:21.03,shares:1000,price:22.7,note:''},
-  ]);
-
-  // Clear sheet sync cache so local data shows
+  const d=getDefaults();
+  Object.entries(d).forEach(([k,v])=>DB.s(k,v));
   ['s_wedding','s_ins_luke','s_ins_jamie','s_child_est','s_monthly','s_wealth','s_wealth_ana','s_stock'].forEach(k=>localStorage.removeItem(k));
-
   toast('✓ 預設資料已載入！');
   const cur=document.querySelector('.tab.on')?.dataset?.p;
   if(cur && cur!=='settings') render(cur);
   rHome();
 }
 
-function initSnaps(){
-  if(DB.g('wl_snaps').length) return;
-  // Seed historical snapshots from spreadsheet data
-  DB.s('wl_snaps',[
-    {id:DB.id(),date:'2019-07-01',label:'2019 Q3',jc:2100000,cw:80000,total:2180000,note:'First labor pension check'},
-    {id:DB.id(),date:'2020-01-01',label:'2020 年初',jc:2800000,cw:95000,total:2895000,note:''},
-    {id:DB.id(),date:'2021-01-01',label:'2021 年初',jc:3500000,cw:110000,total:3610000,note:''},
-    {id:DB.id(),date:'2022-01-01',label:'2022 年初',jc:4200000,cw:120000,total:4320000,note:''},
-    {id:DB.id(),date:'2023-01-01',label:'2023 年初',jc:5100000,cw:130000,total:5230000,note:''},
-    {id:DB.id(),date:'2024-01-01',label:'2024 年初',jc:6200000,cw:130000,total:6330000,note:'Fubon fund + deposits increased'},
-    {id:DB.id(),date:'2025-01-01',label:'2025 年初',jc:7038551,cw:122252,total:7160803,note:'Incl. Mega / Shanghai / Fubon'},
-  ]);
-}
-
 /* ══════ INIT ══════ */
 SHEET_ID=DB.gv('sheet_id','');
+// 自動載入所有預設資料（若本機尚無資料）
+(function(){
+  const defs=getDefaults();
+  Object.entries(defs).forEach(([k,v])=>{
+    if(!DB.g(k).length){ DB.s(k,v); }
+  });
+})();
 initSnaps();
 rHome();
 </script>
