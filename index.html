@@ -1724,6 +1724,19 @@ function resetDefaultData(){
   rHome();
 }
 
+function initSnaps(){
+  if(DB.g('wl_snaps').length) return;
+  DB.s('wl_snaps',[
+    {id:DB.id(),date:'2019-07-01',label:'2019 Q3',jc:2100000,cw:80000,total:2180000,note:'勞退首次查詢'},
+    {id:DB.id(),date:'2020-01-01',label:'2020 年初',jc:2800000,cw:95000,total:2895000,note:''},
+    {id:DB.id(),date:'2021-01-01',label:'2021 年初',jc:3500000,cw:110000,total:3610000,note:''},
+    {id:DB.id(),date:'2022-01-01',label:'2022 年初',jc:4200000,cw:120000,total:4320000,note:''},
+    {id:DB.id(),date:'2023-01-01',label:'2023 年初',jc:5100000,cw:130000,total:5230000,note:''},
+    {id:DB.id(),date:'2024-01-01',label:'2024 年初',jc:6200000,cw:130000,total:6330000,note:'富邦基金+定存增加'},
+    {id:DB.id(),date:'2025-01-01',label:'2025 年初',jc:7038551,cw:122252,total:7160803,note:'含兆豐+上海+富邦'},
+  ]);
+}
+
 /* ══════ INIT ══════ */
 SHEET_ID=DB.gv('sheet_id','');
 // 自動載入所有預設資料（若本機尚無資料）
